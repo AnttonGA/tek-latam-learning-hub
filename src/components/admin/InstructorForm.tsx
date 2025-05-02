@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save } from "lucide-react";
+import ImageUploader from "@/components/ui/ImageUploader";
 
 interface InstructorFormProps {
   instructor?: Instructor;
@@ -19,7 +20,7 @@ const InstructorForm = ({ instructor, onSave, onCancel }: InstructorFormProps) =
     id: instructor?.id || "",
     name: instructor?.name || "",
     role: instructor?.role || "",
-    image: instructor?.image || "https://i.pravatar.cc/300",
+    image: instructor?.image || "",
     bio: instructor?.bio || "",
   });
 
@@ -30,6 +31,13 @@ const InstructorForm = ({ instructor, onSave, onCancel }: InstructorFormProps) =
     setFormData({
       ...formData,
       [name]: value,
+    });
+  };
+
+  const handleImageChange = (value: string) => {
+    setFormData({
+      ...formData,
+      image: value,
     });
   };
 
@@ -78,24 +86,13 @@ const InstructorForm = ({ instructor, onSave, onCancel }: InstructorFormProps) =
               />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="image">URL de la imagen</Label>
-              <Input
-                id="image"
-                name="image"
+              <ImageUploader
+                id="instructor-image"
                 value={formData.image}
-                onChange={handleChange}
-                required
+                onChange={handleImageChange}
+                label="Foto del instructor"
+                previewClassName="h-32 w-32 object-cover rounded-full"
               />
-              {formData.image && (
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500 mb-1">Vista previa:</p>
-                  <img
-                    src={formData.image}
-                    alt="Vista previa"
-                    className="h-32 w-32 object-cover rounded-full"
-                  />
-                </div>
-              )}
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="bio">Biografía</Label>

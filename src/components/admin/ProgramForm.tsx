@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArrowLeft, Save } from "lucide-react";
+import ImageUploader from "@/components/ui/ImageUploader";
 
 interface ProgramFormProps {
   program?: Program;
@@ -29,7 +30,7 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
     level: program?.level || "Principiante",
     students: program?.students || 0,
     description: program?.description || "",
-    image: program?.image || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+    image: program?.image || "",
   });
 
   const handleChange = (
@@ -46,6 +47,13 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
     setFormData({
       ...formData,
       [name]: value,
+    });
+  };
+
+  const handleImageChange = (value: string) => {
+    setFormData({
+      ...formData,
+      image: value,
     });
   };
 
@@ -122,24 +130,13 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
               />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="image">URL de la imagen</Label>
-              <Input
-                id="image"
-                name="image"
+              <ImageUploader
+                id="program-image"
                 value={formData.image}
-                onChange={handleChange}
-                required
+                onChange={handleImageChange}
+                label="Imagen del programa"
+                previewClassName="h-48 w-auto"
               />
-              {formData.image && (
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500 mb-1">Vista previa:</p>
-                  <img
-                    src={formData.image}
-                    alt="Vista previa"
-                    className="h-32 w-auto object-cover rounded"
-                  />
-                </div>
-              )}
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="description">Descripción</Label>

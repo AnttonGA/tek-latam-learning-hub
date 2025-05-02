@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save } from "lucide-react";
+import ImageUploader from "@/components/ui/ImageUploader";
 
 interface TestimonialFormProps {
   testimonial?: Testimonial;
@@ -21,7 +22,7 @@ const TestimonialForm = ({ testimonial, onSave, onCancel }: TestimonialFormProps
     role: testimonial?.role || "",
     company: testimonial?.company || "",
     text: testimonial?.text || "",
-    image: testimonial?.image || "https://i.pravatar.cc/300",
+    image: testimonial?.image || "",
   });
 
   const handleChange = (
@@ -31,6 +32,13 @@ const TestimonialForm = ({ testimonial, onSave, onCancel }: TestimonialFormProps
     setFormData({
       ...formData,
       [name]: value,
+    });
+  };
+
+  const handleImageChange = (value: string) => {
+    setFormData({
+      ...formData,
+      image: value,
     });
   };
 
@@ -89,24 +97,13 @@ const TestimonialForm = ({ testimonial, onSave, onCancel }: TestimonialFormProps
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="image">URL de la imagen</Label>
-              <Input
-                id="image"
-                name="image"
+              <ImageUploader
+                id="testimonial-image"
                 value={formData.image}
-                onChange={handleChange}
-                required
+                onChange={handleImageChange}
+                label="Foto"
+                previewClassName="h-16 w-16 rounded-full"
               />
-              {formData.image && (
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500 mb-1">Vista previa:</p>
-                  <img
-                    src={formData.image}
-                    alt="Vista previa"
-                    className="h-16 w-16 object-cover rounded-full"
-                  />
-                </div>
-              )}
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="text">Testimonio</Label>

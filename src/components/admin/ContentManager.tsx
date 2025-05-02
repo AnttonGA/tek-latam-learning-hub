@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Image, Save } from "lucide-react";
+import { Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ImageUploader from "@/components/ui/ImageUploader";
 
 const ContentManager = () => {
   const [content, setContent] = useState<SiteContent | null>(null);
@@ -42,6 +43,15 @@ const ContentManager = () => {
       setContent({
         ...content,
         [name]: value,
+      });
+    }
+  };
+
+  const handleHeroImageChange = (value: string) => {
+    if (content) {
+      setContent({
+        ...content,
+        heroImage: value
       });
     }
   };
@@ -102,24 +112,13 @@ const ContentManager = () => {
               />
             </div>
             <div>
-              <Label htmlFor="heroImage" className="block text-sm font-medium mb-1">Imagen</Label>
-              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
-                <img 
-                  src={content.heroImage} 
-                  alt="Hero" 
-                  className="w-full sm:w-32 h-32 object-cover rounded" 
-                />
-                <div className="flex-1">
-                  <Input 
-                    id="heroImage" 
-                    name="heroImage" 
-                    value={content.heroImage} 
-                    onChange={handleChange}
-                    className="mb-2" 
-                  />
-                  <p className="text-xs text-gray-500">Introduce la URL de la nueva imagen para la sección Hero.</p>
-                </div>
-              </div>
+              <ImageUploader
+                id="hero-image"
+                value={content.heroImage}
+                onChange={handleHeroImageChange}
+                label="Imagen de la sección Hero"
+                previewClassName="w-full sm:w-64 h-32 object-cover"
+              />
             </div>
           </div>
         </div>
