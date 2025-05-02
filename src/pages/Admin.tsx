@@ -1,21 +1,46 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import { ChevronRight, PenSquare, Trash2, Plus, Save, Image, Users, BookOpen, MessageSquare } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
+import { ChevronRight, PenSquare, Trash2, Plus, Save, Image, Users, BookOpen, MessageSquare, LogOut } from 'lucide-react';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    // Eliminar la información de autenticación
+    sessionStorage.removeItem('isAuthenticated');
+    
+    // Mostrar mensaje de éxito
+    toast({
+      title: "Sesión cerrada",
+      description: "Has salido del panel de administración",
+    });
+    
+    // Redirigir a la página principal
+    navigate('/');
+  };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      <header className="bg-white shadow">
+        <div className="teklatam-container flex justify-between items-center h-16">
+          <h1 className="text-xl font-bold text-teklatam-blue">Panel de Administración <span className="text-teklatam-orange">TekLatam</span></h1>
+          <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2">
+            <LogOut className="h-4 w-4" />
+            Cerrar sesión
+          </Button>
+        </div>
+      </header>
+      
       <main className="flex-grow py-8">
         <div className="teklatam-container">
           <div className="mb-8">
@@ -307,7 +332,12 @@ const Admin = () => {
           </Tabs>
         </div>
       </main>
-      <Footer />
+      
+      <footer className="bg-white border-t py-4">
+        <div className="teklatam-container text-center text-sm text-gray-600">
+          &copy; {new Date().getFullYear()} TekLatam - Panel Administrativo
+        </div>
+      </footer>
     </div>
   );
 };

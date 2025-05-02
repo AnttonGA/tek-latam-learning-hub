@@ -38,10 +38,6 @@ const Navbar = () => {
               <Link to="/nosotros" className="text-teklatam-gray-700 hover:text-teklatam-blue">
                 Nosotros
               </Link>
-              
-              <Link to="/admin" className="text-teklatam-gray-700 hover:text-teklatam-blue">
-                Administración
-              </Link>
             </div>
           </div>
 
@@ -75,9 +71,6 @@ const Navbar = () => {
             </a>
             <Link to="/nosotros" className="block py-2 text-teklatam-gray-700">
               Nosotros
-            </Link>
-            <Link to="/admin" className="block py-2 text-teklatam-gray-700">
-              Administración
             </Link>
           </div>
         )}

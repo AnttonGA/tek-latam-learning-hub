@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useState } from "react";
 
 const App = () => {
@@ -21,7 +23,8 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
             {/* Add more routes here as we develop them */}
             <Route path="*" element={<NotFound />} />
           </Routes>
