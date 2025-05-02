@@ -23,47 +23,24 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             <div className="flex items-center space-x-6">
-              <div className="relative group">
-                <button className="flex items-center text-teklatam-gray-700 hover:text-teklatam-blue">
-                  Programas <ChevronDown className="ml-1 h-4 w-4" />
-                </button>
-                <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                  <Link to="/programas/desarrollo-web" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teklatam-blue-light hover:text-white">
-                    Desarrollo Web
-                  </Link>
-                  <Link to="/programas/ciencia-datos" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teklatam-blue-light hover:text-white">
-                    Ciencia de Datos
-                  </Link>
-                  <Link to="/programas/ciberseguridad" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teklatam-blue-light hover:text-white">
-                    Ciberseguridad
-                  </Link>
-                </div>
-              </div>
+              <a href="#programas" className="text-teklatam-gray-700 hover:text-teklatam-blue">
+                Programas
+              </a>
               
-              <Link to="/instructores" className="text-teklatam-gray-700 hover:text-teklatam-blue">
+              <a href="#instructores" className="text-teklatam-gray-700 hover:text-teklatam-blue">
                 Instructores
-              </Link>
+              </a>
               
-              <Link to="/blog" className="text-teklatam-gray-700 hover:text-teklatam-blue">
-                Blog
-              </Link>
+              <a href="#testimonios" className="text-teklatam-gray-700 hover:text-teklatam-blue">
+                Testimonios
+              </a>
               
               <Link to="/nosotros" className="text-teklatam-gray-700 hover:text-teklatam-blue">
                 Nosotros
               </Link>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              <Link to="/login">
-                <Button variant="outline" className="teklatam-btn-outline">
-                  Iniciar Sesión
-                </Button>
-              </Link>
               
-              <Link to="/registro">
-                <Button className="teklatam-btn-primary">
-                  Registrarse
-                </Button>
+              <Link to="/admin" className="text-teklatam-gray-700 hover:text-teklatam-blue">
+                Administración
               </Link>
             </div>
           </div>
@@ -87,30 +64,21 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden py-4 animate-fade-in">
-            <Link to="/programas" className="block py-2 text-teklatam-gray-700">
+            <a href="#programas" className="block py-2 text-teklatam-gray-700">
               Programas
-            </Link>
-            <Link to="/instructores" className="block py-2 text-teklatam-gray-700">
+            </a>
+            <a href="#instructores" className="block py-2 text-teklatam-gray-700">
               Instructores
-            </Link>
-            <Link to="/blog" className="block py-2 text-teklatam-gray-700">
-              Blog
-            </Link>
+            </a>
+            <a href="#testimonios" className="block py-2 text-teklatam-gray-700">
+              Testimonios
+            </a>
             <Link to="/nosotros" className="block py-2 text-teklatam-gray-700">
               Nosotros
             </Link>
-            <div className="pt-4 space-y-2">
-              <Link to="/login" className="block">
-                <Button variant="outline" className="w-full teklatam-btn-outline">
-                  Iniciar Sesión
-                </Button>
-              </Link>
-              <Link to="/registro" className="block">
-                <Button className="w-full teklatam-btn-primary">
-                  Registrarse
-                </Button>
-              </Link>
-            </div>
+            <Link to="/admin" className="block py-2 text-teklatam-gray-700">
+              Administración
+            </Link>
           </div>
         )}
       </div>
