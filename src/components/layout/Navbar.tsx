@@ -1,14 +1,33 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    setIsOpen(false);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Si estamos en otra página que no sea la principal, navegar a la página principal y luego al anchor
+  const handleNavigation = (sectionId: string) => {
+    const currentPath = window.location.pathname;
+    if (currentPath === '/') {
+      scrollToSection(sectionId);
+    } else {
+      navigate(`/?section=${sectionId}`);
+    }
   };
 
   return (
@@ -23,22 +42,37 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             <div className="flex items-center space-x-6">
-              <a href="#programas" className="text-teklatam-gray-700 hover:text-teklatam-blue">
+              <button 
+                onClick={() => handleNavigation('programas')} 
+                className="text-teklatam-gray-700 hover:text-teklatam-blue"
+              >
                 Programas
-              </a>
+              </button>
               
-              <a href="#instructores" className="text-teklatam-gray-700 hover:text-teklatam-blue">
+              <button 
+                onClick={() => handleNavigation('instructores')} 
+                className="text-teklatam-gray-700 hover:text-teklatam-blue"
+              >
                 Instructores
-              </a>
+              </button>
               
-              <a href="#testimonios" className="text-teklatam-gray-700 hover:text-teklatam-blue">
+              <button 
+                onClick={() => handleNavigation('testimonios')} 
+                className="text-teklatam-gray-700 hover:text-teklatam-blue"
+              >
                 Testimonios
-              </a>
+              </button>
               
               <Link to="/nosotros" className="text-teklatam-gray-700 hover:text-teklatam-blue">
                 Nosotros
               </Link>
             </div>
+
+            <Link to="/login">
+              <Button variant="outline" className="border-teklatam-blue text-teklatam-blue hover:bg-teklatam-blue hover:text-white">
+                Acceso
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -60,18 +94,34 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden py-4 animate-fade-in">
-            <a href="#programas" className="block py-2 text-teklatam-gray-700">
+            <button 
+              onClick={() => handleNavigation('programas')}
+              className="block py-2 text-teklatam-gray-700 w-full text-left"
+            >
               Programas
-            </a>
-            <a href="#instructores" className="block py-2 text-teklatam-gray-700">
+            </button>
+            <button 
+              onClick={() => handleNavigation('instructores')}
+              className="block py-2 text-teklatam-gray-700 w-full text-left"
+            >
               Instructores
-            </a>
-            <a href="#testimonios" className="block py-2 text-teklatam-gray-700">
+            </button>
+            <button 
+              onClick={() => handleNavigation('testimonios')}
+              className="block py-2 text-teklatam-gray-700 w-full text-left"
+            >
               Testimonios
-            </a>
+            </button>
             <Link to="/nosotros" className="block py-2 text-teklatam-gray-700">
               Nosotros
             </Link>
+            <div className="mt-4">
+              <Link to="/login">
+                <Button variant="outline" className="w-full border-teklatam-blue text-teklatam-blue hover:bg-teklatam-blue hover:text-white">
+                  Acceso
+                </Button>
+              </Link>
+            </div>
           </div>
         )}
       </div>

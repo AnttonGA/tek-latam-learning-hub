@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { dataService, SiteContent } from '@/services/dataService';
 
@@ -15,6 +14,13 @@ const CTASection = () => {
       console.error("Error al cargar el contenido del CTA:", error);
     }
   }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   if (!content) {
     return (
@@ -34,11 +40,20 @@ const CTASection = () => {
           {content.ctaDescription}
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button size="lg" className="teklatam-btn-primary bg-teklatam-orange hover:bg-teklatam-orange/90">
-            <Link to="#programas">Explorar Programas</Link>
+          <Button 
+            size="lg" 
+            className="teklatam-btn-primary bg-teklatam-orange hover:bg-teklatam-orange/90"
+            onClick={() => scrollToSection('programas')}
+          >
+            Explorar Programas
           </Button>
-          <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-teklatam-blue">
-            <Link to="#contacto">Contáctanos</Link>
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="border-white text-white hover:bg-white hover:text-teklatam-blue"
+            onClick={() => scrollToSection('contacto')}
+          >
+            Contáctanos
           </Button>
         </div>
       </div>

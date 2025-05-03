@@ -2,10 +2,12 @@
 import { useEffect, useState } from 'react';
 import { Program, dataService } from '@/services/dataService';
 import CourseCard from '@/components/ui/CourseCard';
+import { Button } from '@/components/ui/button';
 
 const FeaturedCourses = () => {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     // Obtener programas desde el servicio de datos
@@ -18,6 +20,29 @@ const FeaturedCourses = () => {
       setLoading(false);
     }
   }, []);
+
+  // Función para manejar el click en "Ver todos los programas"
+  const handleShowAll = () => {
+    setShowAll(!showAll);
+    
+    // Si estamos mostrando todos y volvemos a ocultar, hacer scroll hacia arriba
+    if (showAll) {
+      const element = document.getElementById('programas');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  const scrollToContact = () => {
+    const element = document.getElementById('contacto');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Filtrar programas para mostrar solo 3 cuando showAll es false
+  const displayedPrograms = showAll ? programs : programs.slice(0, 3);
 
   if (loading) {
     return (
@@ -43,7 +68,7 @@ const FeaturedCourses = () => {
           <p className="text-center text-teklatam-gray-600">No hay programas disponibles en este momento.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {programs.map((program) => (
+            {displayedPrograms.map((program) => (
               <CourseCard 
                 key={program.id}
                 title={program.title}
@@ -52,18 +77,21 @@ const FeaturedCourses = () => {
                 students={program.students}
                 description={program.description}
                 imageUrl={program.image}
+                onClick={scrollToContact}
               />
             ))}
           </div>
         )}
         
         <div className="mt-12 text-center">
-          <a 
-            href="#contacto" 
-            className="teklatam-btn-secondary inline-block"
-          >
-            Ver todos los programas
-          </a>
+          {programs.length > 3 && (
+            <Button 
+              onClick={handleShowAll}
+              className="teklatam-btn-secondary"
+            >
+              {showAll ? "Ver menos programas" : "Ver todos los programas"}
+            </Button>
+          )}
         </div>
       </div>
     </section>

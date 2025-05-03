@@ -1,11 +1,12 @@
 
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { dataService, SiteContent } from '@/services/dataService';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
   const [content, setContent] = useState<SiteContent | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -15,6 +16,13 @@ const HeroSection = () => {
       console.error("Error al cargar el contenido del hero:", error);
     }
   }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   if (!content) {
     return (
@@ -37,11 +45,20 @@ const HeroSection = () => {
             {content.heroDescription}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Button size="lg" className="teklatam-btn-primary bg-teklatam-orange hover:bg-teklatam-orange/90">
-              <Link to="#programas">Ver Programas</Link>
+            <Button 
+              size="lg" 
+              className="teklatam-btn-primary bg-teklatam-orange hover:bg-teklatam-orange/90"
+              onClick={() => scrollToSection('programas')}
+            >
+              Ver Programas
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-teklatam-blue">
-              <Link to="#nosotros">Conoce Más</Link>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white text-white hover:bg-white hover:text-teklatam-blue"
+              onClick={() => scrollToSection('nosotros')}
+            >
+              Conoce Más
             </Button>
           </div>
         </div>

@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
+import Nosotros from "./pages/Nosotros";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useState } from "react";
 
@@ -25,6 +26,7 @@ const App = () => {
             <Sonner />
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/nosotros" element={<Nosotros />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
               {/* Add more routes here as we develop them */}

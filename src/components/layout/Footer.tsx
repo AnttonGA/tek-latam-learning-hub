@@ -1,143 +1,112 @@
 
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
 
 const Footer = () => {
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="bg-teklatam-gray-900 text-white">
+    <footer className="bg-teklatam-dark-blue text-white pt-16 pb-8">
       <div className="teklatam-container">
-        {/* Main Footer */}
-        <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Column 1: About */}
-          <div>
-            <div className="mb-4">
-              <Link to="/" className="text-2xl font-bold">
-                Tek<span className="text-teklatam-orange">Latam</span>
-              </Link>
-            </div>
-            <p className="text-teklatam-gray-300 mb-4">
-              Formación en tecnología de alta calidad para profesionales latinoamericanos. 
-              Transformando carreras y potenciando el desarrollo regional.
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+          {/* Logo y descripción */}
+          <div className="md:col-span-2">
+            <Link to="/" className="flex items-center mb-4">
+              <span className="text-white text-2xl font-bold">Tek<span className="text-teklatam-orange">Latam</span></span>
+            </Link>
+            <p className="text-white/70 mb-6 max-w-md">
+              TekLatam es la plataforma educativa líder en América Latina para formación en tecnología, con programas diseñados por expertos de la industria.
             </p>
             <div className="flex space-x-4">
-              <a href="#" aria-label="Facebook" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                <Facebook size={18} />
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
               </a>
-              <a href="#" aria-label="Twitter" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                <Twitter size={18} />
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
               </a>
-              <a href="#" aria-label="Instagram" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                <Instagram size={18} />
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
               </a>
-              <a href="#" aria-label="LinkedIn" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                <Linkedin size={18} />
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
               </a>
             </div>
           </div>
-
-          {/* Column 2: Programs */}
+          
+          {/* Enlaces */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Programas</h3>
-            <ul className="space-y-2">
+            <h3 className="text-lg font-bold mb-4">Navegación</h3>
+            <ul className="space-y-3">
               <li>
-                <Link to="/programas/desarrollo-web" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  Desarrollo Web
-                </Link>
+                <button 
+                  onClick={() => scrollToSection('programas')}
+                  className="text-white/70 hover:text-white cursor-pointer"
+                >
+                  Programas
+                </button>
               </li>
               <li>
-                <Link to="/programas/desarrollo-movil" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  Desarrollo Móvil
-                </Link>
-              </li>
-              <li>
-                <Link to="/programas/ciencia-datos" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  Ciencia de Datos
-                </Link>
-              </li>
-              <li>
-                <Link to="/programas/ciberseguridad" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  Ciberseguridad
-                </Link>
-              </li>
-              <li>
-                <Link to="/programas/inteligencia-artificial" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  Inteligencia Artificial
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 3: Company */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Empresa</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/nosotros" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  Sobre Nosotros
-                </Link>
-              </li>
-              <li>
-                <Link to="/instructores" className="text-teklatam-gray-400 hover:text-white transition-colors">
+                <button 
+                  onClick={() => scrollToSection('instructores')}
+                  className="text-white/70 hover:text-white cursor-pointer"
+                >
                   Instructores
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/blog" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  Blog
-                </Link>
+                <button 
+                  onClick={() => scrollToSection('testimonios')}
+                  className="text-white/70 hover:text-white cursor-pointer"
+                >
+                  Testimonios
+                </button>
               </li>
               <li>
-                <Link to="/empleo" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  Oportunidades de Empleo
-                </Link>
-              </li>
-              <li>
-                <Link to="/alianzas" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  Alianzas Corporativas
+                <Link to="/nosotros" className="text-white/70 hover:text-white">
+                  Nosotros
                 </Link>
               </li>
             </ul>
           </div>
-
-          {/* Column 4: Contact */}
+          
+          {/* Contacto */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contacto</h3>
-            <ul className="space-y-2">
-              <li className="flex items-start">
-                <Mail size={18} className="mr-2 text-teklatam-gray-400 flex-shrink-0 mt-1" />
-                <a href="mailto:contacto@teklatam.com" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  contacto@teklatam.com
-                </a>
+            <h3 className="text-lg font-bold mb-4">Contacto</h3>
+            <ul className="space-y-3">
+              <li className="text-white/70">
+                <span className="block">Email:</span>
+                <a href="mailto:info@teklatam.com" className="hover:text-white">info@teklatam.com</a>
               </li>
-              <li className="flex items-start">
-                <Phone size={18} className="mr-2 text-teklatam-gray-400 flex-shrink-0 mt-1" />
-                <a href="tel:+52555123456" className="text-teklatam-gray-400 hover:text-white transition-colors">
-                  +52 (55) 5123 4567
-                </a>
+              <li className="text-white/70">
+                <span className="block">Teléfono:</span>
+                <a href="tel:+5215551234567" className="hover:text-white">+52 1 555 123 4567</a>
               </li>
-              <li className="mt-4">
-                <Link to="/contacto" className="bg-teklatam-blue px-4 py-2 rounded text-white hover:bg-teklatam-blue-dark transition-colors">
-                  Enviar Mensaje
-                </Link>
+              <li>
+                <button 
+                  onClick={() => scrollToSection('contacto')}
+                  className="px-4 py-2 bg-teklatam-orange text-white rounded hover:bg-teklatam-orange/90 transition-colors mt-2"
+                >
+                  Contáctanos
+                </button>
               </li>
             </ul>
           </div>
         </div>
-
-        {/* Bottom Bar */}
-        <div className="py-4 border-t border-teklatam-gray-800 flex flex-col md:flex-row justify-between items-center text-sm text-teklatam-gray-400">
-          <div className="mb-2 md:mb-0">
-            &copy; {currentYear} TekLatam. Todos los derechos reservados.
-          </div>
-          <div className="flex space-x-4">
-            <Link to="/terminos" className="hover:text-white transition-colors">
-              Términos de Servicio
-            </Link>
-            <Link to="/privacidad" className="hover:text-white transition-colors">
-              Política de Privacidad
-            </Link>
+        
+        {/* Derechos de autor */}
+        <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-white/70 text-sm mb-4 md:mb-0">
+            © {currentYear} TekLatam. Todos los derechos reservados.
+          </p>
+          <div className="flex space-x-4 text-sm text-white/70">
+            <a href="#" className="hover:text-white">Términos y condiciones</a>
+            <a href="#" className="hover:text-white">Política de privacidad</a>
           </div>
         </div>
       </div>

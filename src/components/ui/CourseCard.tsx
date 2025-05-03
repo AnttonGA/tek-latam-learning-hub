@@ -10,6 +10,7 @@ interface CourseCardProps {
   students: number;
   description: string;
   imageUrl: string;
+  onClick?: () => void;
 }
 
 const CourseCard = ({
@@ -19,36 +20,35 @@ const CourseCard = ({
   students,
   description,
   imageUrl,
+  onClick
 }: CourseCardProps) => {
   return (
-    <Card className="overflow-hidden h-full flex flex-col">
-      <div className="h-48 overflow-hidden">
+    <Card className="overflow-hidden transition-shadow hover:shadow-lg">
+      <div className="aspect-video overflow-hidden">
         <img
           src={imageUrl}
           alt={title}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
       </div>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-center">
-          <span className="bg-teklatam-blue/10 text-teklatam-blue text-xs px-2 py-1 rounded">
-            {level}
-          </span>
-          <div className="flex items-center text-xs text-gray-500">
-            <Users className="h-3 w-3 mr-1" />
-            {students.toLocaleString()}
-          </div>
-        </div>
-        <CardTitle className="mt-2 text-xl">{title}</CardTitle>
-        <CardDescription className="text-teklatam-orange">
-          {instructor}
-        </CardDescription>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{instructor} • {level}</CardDescription>
       </CardHeader>
-      <CardContent className="pb-0 flex-grow">
-        <p className="text-teklatam-gray-600 line-clamp-3">{description}</p>
+      <CardContent>
+        <p className="text-sm text-gray-600 mb-4">{description}</p>
+        <div className="flex items-center text-sm text-gray-500">
+          <Users className="h-4 w-4 mr-1" />
+          <span>{students.toLocaleString()} estudiantes</span>
+        </div>
       </CardContent>
-      <CardFooter className="pt-4">
-        <Button className="w-full teklatam-btn-primary">Ver detalles</Button>
+      <CardFooter>
+        <Button 
+          className="w-full bg-teklatam-blue hover:bg-teklatam-blue/90"
+          onClick={onClick}
+        >
+          Más información
+        </Button>
       </CardFooter>
     </Card>
   );
