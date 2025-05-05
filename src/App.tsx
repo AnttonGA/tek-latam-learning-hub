@@ -1,5 +1,5 @@
 
-import React from "react"; // Add explicit React import
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,12 +11,11 @@ import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import Nosotros from "./pages/Nosotros";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import { useState } from "react";
 
-const App = () => {
-  // Crear una nueva instancia de QueryClient para cada renderizado
-  const [queryClient] = useState(() => new QueryClient());
+// Create a QueryClient instance
+const queryClient = new QueryClient();
 
+const App: React.FC = () => {
   return (
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
