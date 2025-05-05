@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut } from 'lucide-react';
+import { LogOut, LayoutDashboard, Book, Users, MessageSquareQuote, FileText } from 'lucide-react';
 import Dashboard from '@/components/admin/Dashboard';
 import ProgramsManager from '@/components/admin/ProgramsManager';
 import InstructorsManager from '@/components/admin/InstructorsManager';
@@ -23,7 +23,7 @@ const Admin = () => {
     // Mostrar mensaje de éxito
     toast({
       title: "Sesión cerrada",
-      description: "Has salido del panel de administración",
+      description: "Has salido del panel de administración"
     });
     
     // Redirigir a la página principal
@@ -32,56 +32,89 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <header className="bg-white shadow">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="teklatam-container flex justify-between items-center h-16">
-          <h1 className="text-xl font-bold text-teklatam-blue">Panel de Administración <span className="text-teklatam-orange">TekLatam</span></h1>
-          <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2">
-            <LogOut className="h-4 w-4" />
-            Cerrar sesión
-          </Button>
+          <div className="flex items-center gap-2">
+            <div className="bg-teklatam-orange text-white p-2 rounded-md">
+              <LayoutDashboard className="h-5 w-5" />
+            </div>
+            <h1 className="text-xl font-bold">
+              <span className="text-teklatam-blue">Admin</span>
+              <span className="text-teklatam-orange">Panel</span>
+            </h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/')} 
+              className="text-teklatam-gray-600"
+            >
+              Ver sitio
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={handleLogout} 
+              className="flex items-center gap-2 border-teklatam-gray-300"
+            >
+              <LogOut className="h-4 w-4" />
+              Cerrar sesión
+            </Button>
+          </div>
         </div>
       </header>
       
       <main className="flex-grow py-8">
         <div className="teklatam-container">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Panel de Administración</h1>
-            <p className="text-teklatam-gray-600">Gestiona el contenido de tu plataforma educativa.</p>
+            <h1 className="text-3xl font-bold mb-2 text-teklatam-gray-800">Panel de Administración</h1>
+            <p className="text-teklatam-gray-600">Gestiona el contenido de tu plataforma educativa TekLatam.</p>
           </div>
           
           <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid grid-cols-4 sm:grid-cols-5 gap-2">
-              <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-              <TabsTrigger value="cursos">Programas</TabsTrigger>
-              <TabsTrigger value="instructores">Instructores</TabsTrigger>
-              <TabsTrigger value="testimonios">Testimonios</TabsTrigger>
-              <TabsTrigger value="contenido" className="hidden sm:block">Contenido</TabsTrigger>
+            <TabsList className="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-gray-100 p-1">
+              <TabsTrigger value="dashboard" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue flex gap-2 items-center">
+                <LayoutDashboard className="h-4 w-4" /> Dashboard
+              </TabsTrigger>
+              <TabsTrigger value="cursos" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue flex gap-2 items-center">
+                <Book className="h-4 w-4" /> Programas
+              </TabsTrigger>
+              <TabsTrigger value="instructores" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue flex gap-2 items-center">
+                <Users className="h-4 w-4" /> Instructores
+              </TabsTrigger>
+              <TabsTrigger value="testimonios" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue flex gap-2 items-center">
+                <MessageSquareQuote className="h-4 w-4" /> Testimonios
+              </TabsTrigger>
+              <TabsTrigger value="contenido" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue hidden sm:flex gap-2 items-center">
+                <FileText className="h-4 w-4" /> Contenido
+              </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="dashboard">
-              <Dashboard />
-            </TabsContent>
-            
-            <TabsContent value="cursos">
-              <ProgramsManager />
-            </TabsContent>
-            
-            <TabsContent value="instructores">
-              <InstructorsManager />
-            </TabsContent>
-            
-            <TabsContent value="testimonios">
-              <TestimonialsManager />
-            </TabsContent>
-            
-            <TabsContent value="contenido">
-              <ContentManager />
-            </TabsContent>
+            <div className="bg-white border rounded-lg shadow-sm">
+              <TabsContent value="dashboard" className="p-4">
+                <Dashboard />
+              </TabsContent>
+              
+              <TabsContent value="cursos" className="p-4">
+                <ProgramsManager />
+              </TabsContent>
+              
+              <TabsContent value="instructores" className="p-4">
+                <InstructorsManager />
+              </TabsContent>
+              
+              <TabsContent value="testimonios" className="p-4">
+                <TestimonialsManager />
+              </TabsContent>
+              
+              <TabsContent value="contenido" className="p-4">
+                <ContentManager />
+              </TabsContent>
+            </div>
           </Tabs>
         </div>
       </main>
       
-      <footer className="bg-white border-t py-4">
+      <footer className="bg-white border-t py-4 mt-8">
         <div className="teklatam-container text-center text-sm text-gray-600">
           &copy; {new Date().getFullYear()} TekLatam - Panel Administrativo
         </div>
