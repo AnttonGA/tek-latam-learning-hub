@@ -31,7 +31,7 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
     students: program?.students || 0,
     description: program?.description || "",
     image: program?.image || "",
-    category: program?.category || "curso", // Add default category here
+    category: program?.category || "curso",
   });
 
   const handleChange = (
@@ -40,7 +40,7 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === "students" ? parseInt(value, 10) : value,
+      [name]: name === "students" ? Number(value) || 0 : value,
     });
   };
 
@@ -60,7 +60,12 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    // Ensure students is a number
+    const formattedData = {
+      ...formData,
+      students: Number(formData.students) || 0
+    };
+    onSave(formattedData);
   };
 
   return (
@@ -125,7 +130,7 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
                 name="students"
                 type="number"
                 min="0"
-                value={formData.students}
+                value={formData.students.toString()}
                 onChange={handleChange}
                 required
               />

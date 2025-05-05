@@ -21,6 +21,7 @@ const ProgramsManager = () => {
   const loadPrograms = () => {
     // Get the latest data from localStorage
     const loadedPrograms = dataService.getPrograms();
+    console.log("Loaded programs:", loadedPrograms);
     setPrograms(loadedPrograms);
   };
 
@@ -54,26 +55,39 @@ const ProgramsManager = () => {
   };
 
   const handleSave = (program: Omit<Program, "id"> | Program) => {
-    if ("id" in program) {
-      // Actualizar un programa existente
-      dataService.updateProgram(program as Program);
+    try {
+      if ("id" in program && program.id) {
+        // Actualizar un programa existente
+        dataService.updateProgram(program as Program);
+        toast({
+          title: "Programa actualizado",
+          description: "El programa ha sido actualizado correctamente.",
+        });
+      } else {
+        // Añadir un nuevo programa
+        const newProgram = dataService.addProgram(program);
+        console.log("New program added:", newProgram);
+        toast({
+          title: "Programa creado",
+          description: "El nuevo programa ha sido creado correctamente.",
+        });
+      }
+      
+      // Reset form state
+      setIsEditing(false);
+      setIsAdding(false);
+      setCurrentProgram(null);
+      
+      // Reload programs to ensure the UI is updated with the latest data
+      loadPrograms();
+    } catch (error) {
+      console.error("Error saving program:", error);
       toast({
-        title: "Programa actualizado",
-        description: "El programa ha sido actualizado correctamente.",
-      });
-    } else {
-      // Añadir un nuevo programa
-      dataService.addProgram(program);
-      toast({
-        title: "Programa creado",
-        description: "El nuevo programa ha sido creado correctamente.",
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al guardar el programa.",
       });
     }
-    setIsEditing(false);
-    setIsAdding(false);
-    
-    // Reload programs to ensure the UI is updated with the latest data
-    loadPrograms();
   };
 
   const handleCancel = () => {
