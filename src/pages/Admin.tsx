@@ -32,7 +32,7 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
         <div className="teklatam-container flex justify-between items-center h-16">
           <div className="flex items-center gap-2">
             <div className="bg-teklatam-orange text-white p-2 rounded-md">
@@ -47,14 +47,14 @@ const Admin = () => {
             <Button 
               variant="ghost" 
               onClick={() => navigate('/')} 
-              className="text-teklatam-gray-600"
+              className="text-teklatam-gray-600 hover:text-teklatam-blue"
             >
               Ver sitio
             </Button>
             <Button 
               variant="outline" 
               onClick={handleLogout} 
-              className="flex items-center gap-2 border-teklatam-gray-300"
+              className="flex items-center gap-2 border-teklatam-gray-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
             >
               <LogOut className="h-4 w-4" />
               Cerrar sesión
@@ -71,42 +71,42 @@ const Admin = () => {
           </div>
           
           <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-gray-100 p-1">
-              <TabsTrigger value="dashboard" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue flex gap-2 items-center">
+            <TabsList className="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-gray-100 p-1 rounded-lg">
+              <TabsTrigger value="dashboard" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue data-[state=active]:shadow-sm flex gap-2 items-center">
                 <LayoutDashboard className="h-4 w-4" /> Dashboard
               </TabsTrigger>
-              <TabsTrigger value="cursos" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue flex gap-2 items-center">
+              <TabsTrigger value="cursos" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue data-[state=active]:shadow-sm flex gap-2 items-center">
                 <Book className="h-4 w-4" /> Programas
               </TabsTrigger>
-              <TabsTrigger value="instructores" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue flex gap-2 items-center">
+              <TabsTrigger value="instructores" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue data-[state=active]:shadow-sm flex gap-2 items-center">
                 <Users className="h-4 w-4" /> Instructores
               </TabsTrigger>
-              <TabsTrigger value="testimonios" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue flex gap-2 items-center">
+              <TabsTrigger value="testimonios" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue data-[state=active]:shadow-sm flex gap-2 items-center">
                 <MessageSquareQuote className="h-4 w-4" /> Testimonios
               </TabsTrigger>
-              <TabsTrigger value="contenido" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue hidden sm:flex gap-2 items-center">
+              <TabsTrigger value="contenido" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue data-[state=active]:shadow-sm hidden sm:flex gap-2 items-center">
                 <FileText className="h-4 w-4" /> Contenido
               </TabsTrigger>
             </TabsList>
             
             <div className="bg-white border rounded-lg shadow-sm">
-              <TabsContent value="dashboard" className="p-4">
+              <TabsContent value="dashboard" className="p-6">
                 <Dashboard />
               </TabsContent>
               
-              <TabsContent value="cursos" className="p-4">
+              <TabsContent value="cursos" className="p-6">
                 <ProgramsManager />
               </TabsContent>
               
-              <TabsContent value="instructores" className="p-4">
+              <TabsContent value="instructores" className="p-6">
                 <InstructorsManager />
               </TabsContent>
               
-              <TabsContent value="testimonios" className="p-4">
+              <TabsContent value="testimonios" className="p-6">
                 <TestimonialsManager />
               </TabsContent>
               
-              <TabsContent value="contenido" className="p-4">
+              <TabsContent value="contenido" className="p-6">
                 <ContentManager />
               </TabsContent>
             </div>

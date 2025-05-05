@@ -19,6 +19,7 @@ const ProgramsManager = () => {
   }, []);
 
   const loadPrograms = () => {
+    // Get the latest data from localStorage
     const loadedPrograms = dataService.getPrograms();
     setPrograms(loadedPrograms);
   };
@@ -70,6 +71,8 @@ const ProgramsManager = () => {
     }
     setIsEditing(false);
     setIsAdding(false);
+    
+    // Reload programs to ensure the UI is updated with the latest data
     loadPrograms();
   };
 
@@ -108,6 +111,7 @@ const ProgramsManager = () => {
                   <th className="py-3 px-4 text-left">Título</th>
                   <th className="py-3 px-4 text-left">Instructor</th>
                   <th className="py-3 px-4 text-left">Nivel</th>
+                  <th className="py-3 px-4 text-left">Categoría</th>
                   <th className="py-3 px-4 text-left">Estudiantes</th>
                   <th className="py-3 px-4 text-center">Acciones</th>
                 </tr>
@@ -118,6 +122,7 @@ const ProgramsManager = () => {
                     <td className="py-3 px-4">{program.title}</td>
                     <td className="py-3 px-4">{program.instructor}</td>
                     <td className="py-3 px-4">{program.level}</td>
+                    <td className="py-3 px-4">{program.category}</td>
                     <td className="py-3 px-4">{program.students}</td>
                     <td className="py-3 px-4">
                       <div className="flex justify-center space-x-2">
@@ -137,7 +142,7 @@ const ProgramsManager = () => {
                 ))}
                 {programs.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-gray-500">
+                    <td colSpan={6} className="py-8 text-center text-gray-500">
                       No hay programas disponibles. Haz clic en "Nuevo Programa" para agregar uno.
                     </td>
                   </tr>
