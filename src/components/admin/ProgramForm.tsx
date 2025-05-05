@@ -31,6 +31,7 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
     students: program?.students || 0,
     description: program?.description || "",
     image: program?.image || "",
+    category: program?.category || "curso", // Add default category here
   });
 
   const handleChange = (
@@ -128,6 +129,22 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
                 onChange={handleChange}
                 required
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="category">Categoría</Label>
+              <Select
+                value={formData.category}
+                onValueChange={(value) => handleSelectChange("category", value as 'curso' | 'diplomado' | 'maestria')}
+              >
+                <SelectTrigger id="category">
+                  <SelectValue placeholder="Selecciona la categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="curso">Curso</SelectItem>
+                  <SelectItem value="diplomado">Diplomado</SelectItem>
+                  <SelectItem value="maestria">Maestría</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2 md:col-span-2">
               <ImageUploader
