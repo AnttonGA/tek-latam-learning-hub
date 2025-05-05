@@ -1,4 +1,3 @@
-
 // Tipos de datos para nuestra aplicación
 export interface Program {
   id: string;
@@ -8,6 +7,7 @@ export interface Program {
   students: number;
   description: string;
   image: string;
+  category: 'curso' | 'diplomado' | 'maestria'; // Nueva propiedad para categorizar los programas
 }
 
 export interface Instructor {
@@ -44,7 +44,8 @@ const defaultPrograms: Program[] = [
     level: "Intermedio", 
     students: 3420,
     description: "Aprende a desarrollar aplicaciones web completas utilizando MongoDB, Express, React y Node.js.",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085"
+    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+    category: "curso"
   },
   { 
     id: "2", 
@@ -53,7 +54,8 @@ const defaultPrograms: Program[] = [
     level: "Avanzado", 
     students: 2874,
     description: "Domina técnicas avanzadas de análisis de datos y algoritmos de aprendizaje automático.",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5"
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
+    category: "diplomado"
   },
   { 
     id: "3", 
@@ -62,7 +64,8 @@ const defaultPrograms: Program[] = [
     level: "Principiante", 
     students: 5932,
     description: "Iníciate en el mundo del desarrollo web con HTML, CSS y JavaScript.",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6"
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+    category: "curso"
   },
   { 
     id: "4", 
@@ -71,7 +74,28 @@ const defaultPrograms: Program[] = [
     level: "Intermedio", 
     students: 1853,
     description: "Aprende a proteger sistemas y redes contra amenazas informáticas.",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81"
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
+    category: "diplomado"
+  },
+  { 
+    id: "5", 
+    title: "Maestría en Inteligencia Artificial", 
+    instructor: "Roberto González", 
+    level: "Avanzado", 
+    students: 1245,
+    description: "Programa de maestría especializado en las últimas técnicas y aplicaciones de la IA.",
+    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485",
+    category: "maestria"
+  },
+  { 
+    id: "6", 
+    title: "Maestría en Gestión de Proyectos Tecnológicos", 
+    instructor: "Laura Martínez", 
+    level: "Avanzado", 
+    students: 987,
+    description: "Aprende metodologías ágiles y tradicionales para liderar proyectos tecnológicos exitosos.",
+    image: "https://images.unsplash.com/photo-1531538606174-0f90ff5dce83",
+    category: "maestria"
   }
 ];
 
