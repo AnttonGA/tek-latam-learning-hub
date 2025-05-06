@@ -42,12 +42,17 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow">
+        {/* Hero section sin restricción de ancho */}
         <HeroSection />
-        <FeaturedCourses />
-        <InstructorsSection />
-        <TestimonialsSection />
-        <CTASection />
-        <ContactSection />
+        
+        {/* El resto de secciones con contenedor */}
+        <div className="teklatam-container">
+          <FeaturedCourses />
+          <InstructorsSection />
+          <TestimonialsSection />
+          <CTASection />
+          <ContactSection />
+        </div>
       </main>
       <Footer />
     </div>

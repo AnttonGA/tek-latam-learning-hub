@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { dataService, SiteContent } from '@/services/dataService';
 import { useNavigate } from 'react-router-dom';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Book, GraduationCap } from "lucide-react";
+import { Book, GraduationCap, ChevronLeft, ChevronRight } from "lucide-react";
 
 const HeroSection = () => {
   const [content, setContent] = useState<SiteContent | null>(null);
@@ -54,47 +54,51 @@ const HeroSection = () => {
   }
 
   return (
-    <section className="relative">
-      <Carousel className="w-full max-w-full overflow-hidden h-[600px]">
+    <section className="relative w-full">
+      {/* Eliminamos la clase de altura fija para que abarque todo el ancho */}
+      <Carousel className="w-full overflow-hidden h-[80vh]">
         <CarouselContent>
           {heroImages.map((image, index) => (
             <CarouselItem key={index} className="h-full">
               <div className="relative h-full w-full">
-                {/* Imagen de fondo */}
+                {/* Imagen de fondo mejorada con mejor calidad */}
                 <div 
                   className="absolute inset-0 bg-cover bg-center animate-fade-in"
-                  style={{ backgroundImage: `url(${image.url})` }}
+                  style={{ 
+                    backgroundImage: `url(${image.url})`,
+                    backgroundPosition: 'center 30%'
+                  }}
                 >
-                  {/* Overlay oscuro para mejorar legibilidad del texto */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+                  {/* Overlay con gradiente más dinámico para mejorar legibilidad */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent"></div>
                 </div>
                 
-                {/* Contenido superpuesto */}
-                <div className="teklatam-container relative z-10 h-full flex flex-col justify-center items-start">
+                {/* Contenido superpuesto con más espacio a los lados */}
+                <div className="relative z-10 h-full flex flex-col justify-center max-w-7xl mx-auto px-6 md:px-12">
                   <div className="max-w-2xl space-y-6 text-center md:text-left">
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-white animate-slide-up">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white animate-slide-up">
                       {image.title}
                     </h1>
-                    <p className="text-lg text-white/90 max-w-lg animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                    <p className="text-xl text-white/90 max-w-xl animate-slide-up" style={{ animationDelay: '0.2s' }}>
                       {image.subtitle}
                     </p>
                     
                     <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start animate-slide-up" style={{ animationDelay: '0.4s' }}>
                       <Button 
                         size="lg" 
-                        className="bg-teklatam-orange hover:bg-teklatam-orange/90 text-white"
+                        className="bg-teklatam-orange hover:bg-teklatam-orange/90 text-white px-8 py-6 text-lg h-auto"
                         onClick={() => scrollToSection('programas')}
                       >
-                        <GraduationCap className="mr-2" />
+                        <GraduationCap className="mr-2 size-5" />
                         Ver Programas
                       </Button>
                       <Button 
                         size="lg" 
                         variant="outline" 
-                        className="border-white text-white hover:bg-white hover:text-teklatam-orange"
+                        className="border-2 border-white text-white hover:bg-white/10 hover:text-white px-8 py-6 text-lg h-auto"
                         onClick={() => scrollToSection('nosotros')}
                       >
-                        <Book className="mr-2" />
+                        <Book className="mr-2 size-5" />
                         Conoce Más
                       </Button>
                     </div>
@@ -104,9 +108,29 @@ const HeroSection = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <div className="absolute bottom-6 right-6 z-20 flex gap-2">
-          <CarouselPrevious className="relative left-0 top-0 h-9 w-9 translate-x-0 translate-y-0 bg-white/30 border-white/30 text-white hover:bg-white/50 hover:text-white" />
-          <CarouselNext className="relative right-0 top-0 h-9 w-9 translate-x-0 translate-y-0 bg-white/30 border-white/30 text-white hover:bg-white/50 hover:text-white" />
+        
+        {/* Controles del carousel mejorados */}
+        <div className="absolute z-20 inset-0 pointer-events-none flex items-center justify-between px-4">
+          <div className="pointer-events-auto">
+            <CarouselPrevious className="h-12 w-12 bg-black/30 hover:bg-black/50 border-none text-white" >
+              <ChevronLeft className="size-6" />
+            </CarouselPrevious>
+          </div>
+          <div className="pointer-events-auto">
+            <CarouselNext className="h-12 w-12 bg-black/30 hover:bg-black/50 border-none text-white">
+              <ChevronRight className="size-6" />
+            </CarouselNext>
+          </div>
+        </div>
+
+        {/* Indicadores de slide */}
+        <div className="absolute bottom-8 left-0 right-0 z-20 flex justify-center gap-2">
+          {heroImages.map((_, index) => (
+            <span 
+              key={index} 
+              className="w-3 h-3 rounded-full bg-white/50 block"
+            ></span>
+          ))}
         </div>
       </Carousel>
     </section>
