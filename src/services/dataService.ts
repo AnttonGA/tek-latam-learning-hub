@@ -9,7 +9,26 @@ export interface Program {
   students: number;
   description: string;
   image: string;
-  category: 'curso' | 'diplomado' | 'maestria'; // Nueva propiedad para categorizar los programas
+  category: 'curso' | 'diplomado' | 'maestria';
+  duration?: string;
+  schedule?: string;
+  startDate?: string;
+  detailedDescription?: string;
+  learningObjectives?: string[];
+  requirements?: string[];
+  targetAudience?: string;
+  modules?: ProgramModule[];
+  faqs?: ProgramFAQ[];
+}
+
+export interface ProgramModule {
+  title: string;
+  content: string;
+}
+
+export interface ProgramFAQ {
+  question: string;
+  answer: string;
 }
 
 export interface Instructor {
@@ -47,7 +66,61 @@ const defaultPrograms: Program[] = [
     students: 3420,
     description: "Aprende a desarrollar aplicaciones web completas utilizando MongoDB, Express, React y Node.js.",
     image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-    category: "curso"
+    category: "curso",
+    duration: "6 meses",
+    schedule: "Flexible, 8-10 horas por semana",
+    startDate: "Próximo inicio: 15 de junio, 2025",
+    detailedDescription: "Este programa está diseñado para proporcionar una formación completa que te permitirá desarrollarte profesionalmente en esta área, adquiriendo conocimientos prácticos y teóricos demandados por el mercado laboral actual.",
+    learningObjectives: [
+      "Dominio de las técnicas y herramientas fundamentales",
+      "Aplicación práctica en proyectos reales",
+      "Desarrollo de un portfolio profesional",
+      "Acceso a una comunidad de expertos y estudiantes",
+      "Mentoría personalizada durante todo el programa",
+      "Certificación reconocida en la industria"
+    ],
+    requirements: [
+      "Conocimientos básicos en el área (para niveles intermedio y avanzado)",
+      "Computadora con acceso a internet",
+      "Dedicación de 8-10 horas semanales"
+    ],
+    targetAudience: "Este programa está dirigido a profesionales que buscan especializarse, estudiantes que desean complementar su formación académica, y entusiastas que quieren iniciar una carrera en este campo.",
+    modules: [
+      {
+        title: "Módulo 1: Fundamentos",
+        content: "Introducción a los conceptos básicos de la materia. Teoría y práctica inicial."
+      },
+      {
+        title: "Módulo 2: Desarrollo de habilidades",
+        content: "Implementación de los conceptos aprendidos en ejercicios prácticos."
+      },
+      {
+        title: "Módulo 3: Aplicación real",
+        content: "Desarrollo de proyectos con aplicación en escenarios reales."
+      },
+      {
+        title: "Módulo 4: Especialización",
+        content: "Profundización en áreas específicas y desarrollo de portfolio."
+      }
+    ],
+    faqs: [
+      {
+        question: "¿Necesito conocimientos previos?",
+        answer: "Depende del nivel del programa. Los cursos de nivel principiante no requieren conocimientos previos, mientras que los intermedios y avanzados sí requieren una base."
+      },
+      {
+        question: "¿Cómo son las clases?",
+        answer: "Las clases combinan teoría con práctica. Incluyen videos explicativos, material de lectura, ejercicios prácticos y proyectos reales."
+      },
+      {
+        question: "¿Recibo alguna certificación?",
+        answer: "Sí, al finalizar el programa recibirás un certificado digital que acredita tu participación y aprendizaje."
+      },
+      {
+        question: "¿Hay soporte durante el curso?",
+        answer: "Contamos con un equipo de mentores que te apoyarán durante todo el proceso de aprendizaje, respondiendo dudas y brindando retroalimentación."
+      }
+    ]
   },
   { 
     id: "2", 
@@ -57,7 +130,30 @@ const defaultPrograms: Program[] = [
     students: 2874,
     description: "Domina técnicas avanzadas de análisis de datos y algoritmos de aprendizaje automático.",
     image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
-    category: "diplomado"
+    category: "diplomado",
+    duration: "8 meses",
+    schedule: "Flexible, 10-12 horas por semana",
+    startDate: "Próximo inicio: 1 de julio, 2025",
+    modules: [
+      {
+        title: "Módulo 1: Fundamentos de Ciencias de Datos",
+        content: "Introducción a los conceptos básicos del análisis de datos y estadísticas."
+      },
+      {
+        title: "Módulo 2: Machine Learning",
+        content: "Algoritmos de aprendizaje supervisado y no supervisado."
+      }
+    ],
+    faqs: [
+      {
+        question: "¿Necesito saber programar?",
+        answer: "Se recomienda tener conocimientos básicos de Python para aprovechar al máximo el curso."
+      },
+      {
+        question: "¿Qué herramientas utilizaremos?",
+        answer: "Trabajaremos con Python, Pandas, NumPy, Scikit-learn, TensorFlow, entre otras."
+      }
+    ]
   },
   { 
     id: "3", 
@@ -67,7 +163,56 @@ const defaultPrograms: Program[] = [
     students: 5932,
     description: "Iníciate en el mundo del desarrollo web con HTML, CSS y JavaScript.",
     image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
-    category: "curso"
+    category: "curso",
+    duration: "4 meses",
+    schedule: "Flexible, 6-8 horas por semana",
+    startDate: "Próximo inicio: 10 de agosto, 2025",
+    detailedDescription: "Este programa te brindará una formación sólida en el desarrollo web, desde los fundamentos hasta la creación de aplicaciones web completas.",
+    learningObjectives: [
+      "Conocimientos básicos de HTML, CSS y JavaScript",
+      "Práctica en proyectos reales",
+      "Desarrollo de un portfolio profesional",
+      "Acceso a una comunidad de expertos y estudiantes",
+      "Mentoría personalizada durante todo el programa",
+      "Certificación reconocida en la industria"
+    ],
+    requirements: [
+      "Computadora con acceso a internet",
+      "Dedicación de 6-8 horas semanales"
+    ],
+    targetAudience: "Este programa está dirigido a estudiantes que desean comenzar su carrera en desarrollo web, profesionales que buscan especializarse en este campo, y entusiastas que quieren iniciar una carrera en este campo.",
+    modules: [
+      {
+        title: "Módulo 1: Fundamentos de HTML y CSS",
+        content: "Introducción a los conceptos básicos de HTML y CSS. Teoría y práctica inicial."
+      },
+      {
+        title: "Módulo 2: JavaScript",
+        content: "Implementación de los conceptos aprendidos en ejercicios prácticos."
+      },
+      {
+        title: "Módulo 3: Desarrollo de aplicaciones web",
+        content: "Desarrollo de proyectos con aplicación en escenarios reales."
+      }
+    ],
+    faqs: [
+      {
+        question: "¿Necesito conocimientos previos?",
+        answer: "No, este programa es ideal para principiantes."
+      },
+      {
+        question: "¿Cómo son las clases?",
+        answer: "Las clases combinan teoría con práctica. Incluyen videos explicativos, material de lectura, ejercicios prácticos y proyectos reales."
+      },
+      {
+        question: "¿Recibo alguna certificación?",
+        answer: "Sí, al finalizar el programa recibirás un certificado digital que acredita tu participación y aprendizaje."
+      },
+      {
+        question: "¿Hay soporte durante el curso?",
+        answer: "Contamos con un equipo de mentores que te apoyarán durante todo el proceso de aprendizaje, respondiendo dudas y brindando retroalimentación."
+      }
+    ]
   },
   { 
     id: "4", 
@@ -77,7 +222,56 @@ const defaultPrograms: Program[] = [
     students: 1853,
     description: "Aprende a proteger sistemas y redes contra amenazas informáticas.",
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
-    category: "diplomado"
+    category: "diplomado",
+    duration: "10 meses",
+    schedule: "Flexible, 12-14 horas por semana",
+    startDate: "Próximo inicio: 1 de septiembre, 2025",
+    detailedDescription: "Este programa te brindará una formación sólida en la ciberseguridad, desde los fundamentos hasta la implementación de soluciones de seguridad avanzadas.",
+    learningObjectives: [
+      "Conocimientos básicos de ciberseguridad",
+      "Práctica en proyectos reales",
+      "Desarrollo de un portfolio profesional",
+      "Acceso a una comunidad de expertos y estudiantes",
+      "Mentoría personalizada durante todo el programa",
+      "Certificación reconocida en la industria"
+    ],
+    requirements: [
+      "Computadora con acceso a internet",
+      "Dedicación de 12-14 horas semanales"
+    ],
+    targetAudience: "Este programa está dirigido a profesionales que buscan especializarse en ciberseguridad, estudiantes que desean complementar su formación académica, y entusiastas que quieren iniciar una carrera en este campo.",
+    modules: [
+      {
+        title: "Módulo 1: Fundamentos de ciberseguridad",
+        content: "Introducción a los conceptos básicos de ciberseguridad. Teoría y práctica inicial."
+      },
+      {
+        title: "Módulo 2: Implementación de soluciones de seguridad",
+        content: "Implementación de los conceptos aprendidos en ejercicios prácticos."
+      },
+      {
+        title: "Módulo 3: Desarrollo de aplicaciones de seguridad",
+        content: "Desarrollo de proyectos con aplicación en escenarios reales."
+      }
+    ],
+    faqs: [
+      {
+        question: "¿Necesito conocimientos previos?",
+        answer: "No, este programa es ideal para profesionales con experiencia en ciberseguridad."
+      },
+      {
+        question: "¿Cómo son las clases?",
+        answer: "Las clases combinan teoría con práctica. Incluyen videos explicativos, material de lectura, ejercicios prácticos y proyectos reales."
+      },
+      {
+        question: "¿Recibo alguna certificación?",
+        answer: "Sí, al finalizar el programa recibirás un certificado digital que acredita tu participación y aprendizaje."
+      },
+      {
+        question: "¿Hay soporte durante el curso?",
+        answer: "Contamos con un equipo de mentores que te apoyarán durante todo el proceso de aprendizaje, respondiendo dudas y brindando retroalimentación."
+      }
+    ]
   },
   { 
     id: "5", 
@@ -87,7 +281,56 @@ const defaultPrograms: Program[] = [
     students: 1245,
     description: "Programa de maestría especializado en las últimas técnicas y aplicaciones de la IA.",
     image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485",
-    category: "maestria"
+    category: "maestria",
+    duration: "24 meses",
+    schedule: "Flexible, 16-18 horas por semana",
+    startDate: "Próximo inicio: 1 de octubre, 2025",
+    detailedDescription: "Este programa te brindará una formación sólida en la inteligencia artificial, desde los fundamentos hasta la implementación de soluciones avanzadas.",
+    learningObjectives: [
+      "Conocimientos avanzados en inteligencia artificial",
+      "Práctica en proyectos reales",
+      "Desarrollo de un portfolio profesional",
+      "Acceso a una comunidad de expertos y estudiantes",
+      "Mentoría personalizada durante todo el programa",
+      "Certificación reconocida en la industria"
+    ],
+    requirements: [
+      "Computadora con acceso a internet",
+      "Dedicación de 16-18 horas semanales"
+    ],
+    targetAudience: "Este programa está dirigido a profesionales que buscan especializarse en inteligencia artificial, estudiantes que desean complementar su formación académica, y entusiastas que quieren iniciar una carrera en este campo.",
+    modules: [
+      {
+        title: "Módulo 1: Fundamentos de inteligencia artificial",
+        content: "Introducción a los conceptos básicos de inteligencia artificial. Teoría y práctica inicial."
+      },
+      {
+        title: "Módulo 2: Implementación de algoritmos de aprendizaje",
+        content: "Implementación de los conceptos aprendidos en ejercicios prácticos."
+      },
+      {
+        title: "Módulo 3: Desarrollo de soluciones avanzadas",
+        content: "Desarrollo de proyectos con aplicación en escenarios reales."
+      }
+    ],
+    faqs: [
+      {
+        question: "¿Necesito conocimientos previos?",
+        answer: "No, este programa es ideal para profesionales con experiencia en inteligencia artificial."
+      },
+      {
+        question: "¿Cómo son las clases?",
+        answer: "Las clases combinan teoría con práctica. Incluyen videos explicativos, material de lectura, ejercicios prácticos y proyectos reales."
+      },
+      {
+        question: "¿Recibo alguna certificación?",
+        answer: "Sí, al finalizar el programa recibirás un certificado digital que acredita tu participación y aprendizaje."
+      },
+      {
+        question: "¿Hay soporte durante el curso?",
+        answer: "Contamos con un equipo de mentores que te apoyarán durante todo el proceso de aprendizaje, respondiendo dudas y brindando retroalimentación."
+      }
+    ]
   },
   { 
     id: "6", 
@@ -97,7 +340,56 @@ const defaultPrograms: Program[] = [
     students: 987,
     description: "Aprende metodologías ágiles y tradicionales para liderar proyectos tecnológicos exitosos.",
     image: "https://images.unsplash.com/photo-1531538606174-0f90ff5dce83",
-    category: "maestria"
+    category: "maestria",
+    duration: "24 meses",
+    schedule: "Flexible, 16-18 horas por semana",
+    startDate: "Próximo inicio: 1 de octubre, 2025",
+    detailedDescription: "Este programa te brindará una formación sólida en la gestión de proyectos tecnológicos, desde los fundamentos hasta la implementación de soluciones avanzadas.",
+    learningObjectives: [
+      "Conocimientos avanzados en gestión de proyectos tecnológicos",
+      "Práctica en proyectos reales",
+      "Desarrollo de un portfolio profesional",
+      "Acceso a una comunidad de expertos y estudiantes",
+      "Mentoría personalizada durante todo el programa",
+      "Certificación reconocida en la industria"
+    ],
+    requirements: [
+      "Computadora con acceso a internet",
+      "Dedicación de 16-18 horas semanales"
+    ],
+    targetAudience: "Este programa está dirigido a profesionales que buscan especializarse en gestión de proyectos tecnológicos, estudiantes que desean complementar su formación académica, y entusiastas que quieren iniciar una carrera en este campo.",
+    modules: [
+      {
+        title: "Módulo 1: Fundamentos de gestión de proyectos tecnológicos",
+        content: "Introducción a los conceptos básicos de gestión de proyectos tecnológicos. Teoría y práctica inicial."
+      },
+      {
+        title: "Módulo 2: Implementación de metodologías ágiles",
+        content: "Implementación de los conceptos aprendidos en ejercicios prácticos."
+      },
+      {
+        title: "Módulo 3: Desarrollo de soluciones avanzadas",
+        content: "Desarrollo de proyectos con aplicación en escenarios reales."
+      }
+    ],
+    faqs: [
+      {
+        question: "¿Necesito conocimientos previos?",
+        answer: "No, este programa es ideal para profesionales con experiencia en gestión de proyectos tecnológicos."
+      },
+      {
+        question: "¿Cómo son las clases?",
+        answer: "Las clases combinan teoría con práctica. Incluyen videos explicativos, material de lectura, ejercicios prácticos y proyectos reales."
+      },
+      {
+        question: "¿Recibo alguna certificación?",
+        answer: "Sí, al finalizar el programa recibirás un certificado digital que acredita tu participación y aprendizaje."
+      },
+      {
+        question: "¿Hay soporte durante el curso?",
+        answer: "Contamos con un equipo de mentores que te apoyarán durante todo el proceso de aprendizaje, respondiendo dudas y brindando retroalimentación."
+      }
+    ]
   }
 ];
 

@@ -86,49 +86,6 @@ const ProgramDetail = () => {
     );
   }
 
-  // Información del programa (mock data que podría venir de la API)
-  const programDetails = {
-    duration: "6 meses",
-    schedule: "Flexible, 8-10 horas por semana",
-    startDate: "Próximo inicio: 15 de junio, 2025",
-    modules: [
-      {
-        title: "Módulo 1: Fundamentos",
-        content: "Introducción a los conceptos básicos de la materia. Teoría y práctica inicial."
-      },
-      {
-        title: "Módulo 2: Desarrollo de habilidades",
-        content: "Implementación de los conceptos aprendidos en ejercicios prácticos."
-      },
-      {
-        title: "Módulo 3: Aplicación real",
-        content: "Desarrollo de proyectos con aplicación en escenarios reales."
-      },
-      {
-        title: "Módulo 4: Especialización",
-        content: "Profundización en áreas específicas y desarrollo de portfolio."
-      }
-    ],
-    faqs: [
-      {
-        question: "¿Necesito conocimientos previos?",
-        answer: "Depende del nivel del programa. Los cursos de nivel principiante no requieren conocimientos previos, mientras que los intermedios y avanzados sí requieren una base."
-      },
-      {
-        question: "¿Cómo son las clases?",
-        answer: "Las clases combinan teoría con práctica. Incluyen videos explicativos, material de lectura, ejercicios prácticos y proyectos reales."
-      },
-      {
-        question: "¿Recibo alguna certificación?",
-        answer: "Sí, al finalizar el programa recibirás un certificado digital que acredita tu participación y aprendizaje."
-      },
-      {
-        question: "¿Hay soporte durante el curso?",
-        answer: "Contamos con un equipo de mentores que te apoyarán durante todo el proceso de aprendizaje, respondiendo dudas y brindando retroalimentación."
-      }
-    ]
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -168,7 +125,7 @@ const ProgramDetail = () => {
                 </div>
                 <div className="flex items-center">
                   <Clock className="h-5 w-5 mr-2" />
-                  <span>{programDetails.duration}</span>
+                  <span>{program.duration || "Duración no especificada"}</span>
                 </div>
               </div>
               
@@ -205,7 +162,7 @@ const ProgramDetail = () => {
                       <Calendar className="h-4 w-4 mr-2 text-teklatam-orange" />
                       <span className="font-semibold">Inicio:</span>
                     </div>
-                    <p>{programDetails.startDate}</p>
+                    <p>{program.startDate || "Próximamente"}</p>
                   </div>
                   
                   <div>
@@ -213,7 +170,7 @@ const ProgramDetail = () => {
                       <Clock className="h-4 w-4 mr-2 text-teklatam-orange" />
                       <span className="font-semibold">Horario:</span>
                     </div>
-                    <p>{programDetails.schedule}</p>
+                    <p>{program.schedule || "Flexible"}</p>
                   </div>
                   
                   <div>
@@ -254,52 +211,59 @@ const ProgramDetail = () => {
               <div className="bg-white p-8 rounded-lg shadow-sm">
                 <h2 className="text-2xl font-bold mb-4">Sobre este programa</h2>
                 <p className="text-lg mb-6">
-                  {program.description} Este programa está diseñado para proporcionar una formación
-                  completa que te permitirá desarrollarte profesionalmente en esta área, adquiriendo
-                  conocimientos prácticos y teóricos demandados por el mercado laboral actual.
+                  {program.detailedDescription || program.description}
                 </p>
                 
                 <h3 className="text-xl font-bold mb-3">Lo que aprenderás</h3>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
-                  <li className="flex items-start">
-                    <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
-                    <span>Dominio de las técnicas y herramientas fundamentales</span>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
-                    <span>Aplicación práctica en proyectos reales</span>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
-                    <span>Desarrollo de un portfolio profesional</span>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
-                    <span>Acceso a una comunidad de expertos y estudiantes</span>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
-                    <span>Mentoría personalizada durante todo el programa</span>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
-                    <span>Certificación reconocida en la industria</span>
-                  </li>
+                  {program.learningObjectives && program.learningObjectives.length > 0 ? (
+                    program.learningObjectives.map((objective, index) => (
+                      <li key={index} className="flex items-start">
+                        <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
+                        <span>{objective}</span>
+                      </li>
+                    ))
+                  ) : (
+                    <>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
+                        <span>Dominio de las técnicas y herramientas fundamentales</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
+                        <span>Aplicación práctica en proyectos reales</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
+                        <span>Desarrollo de un portfolio profesional</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-1 h-5 w-5 text-teklatam-orange">✓</div>
+                        <span>Acceso a una comunidad de expertos y estudiantes</span>
+                      </li>
+                    </>
+                  )}
                 </ul>
                 
                 <h3 className="text-xl font-bold mb-3">Requisitos</h3>
                 <ul className="list-disc pl-5 mb-8">
-                  <li className="mb-2">Conocimientos básicos en el área (para niveles intermedio y avanzado)</li>
-                  <li className="mb-2">Computadora con acceso a internet</li>
-                  <li className="mb-2">Dedicación de 8-10 horas semanales</li>
+                  {program.requirements && program.requirements.length > 0 ? (
+                    program.requirements.map((requirement, index) => (
+                      <li key={index} className="mb-2">{requirement}</li>
+                    ))
+                  ) : (
+                    <>
+                      <li className="mb-2">Conocimientos básicos en el área (para niveles intermedio y avanzado)</li>
+                      <li className="mb-2">Computadora con acceso a internet</li>
+                      <li className="mb-2">Dedicación de 8-10 horas semanales</li>
+                    </>
+                  )}
                 </ul>
                 
                 <h3 className="text-xl font-bold mb-3">A quién va dirigido</h3>
                 <p className="text-lg">
-                  Este programa está dirigido a profesionales que buscan especializarse, estudiantes
-                  que desean complementar su formación académica, y entusiastas que quieren iniciar
-                  una carrera en este campo. Es ideal para quienes buscan una formación práctica y
-                  actualizada con las demandas del mercado laboral.
+                  {program.targetAudience || 
+                    "Este programa está dirigido a profesionales que buscan especializarse, estudiantes que desean complementar su formación académica, y entusiastas que quieren iniciar una carrera en este campo. Es ideal para quienes buscan una formación práctica y actualizada con las demandas del mercado laboral."}
                 </p>
               </div>
             </TabsContent>
@@ -309,17 +273,41 @@ const ProgramDetail = () => {
                 <h2 className="text-2xl font-bold mb-6">Contenido del programa</h2>
                 
                 <div className="space-y-4">
-                  {programDetails.modules.map((module, index) => (
-                    <Collapsible key={index}>
-                      <CollapsibleTrigger className="flex justify-between items-center w-full p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all">
-                        <h3 className="text-lg font-medium">{module.title}</h3>
-                        <span>+</span>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="p-4 border-t">
-                        <p>{module.content}</p>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  ))}
+                  {program.modules && program.modules.length > 0 ? (
+                    program.modules.map((module, index) => (
+                      <Collapsible key={index}>
+                        <CollapsibleTrigger className="flex justify-between items-center w-full p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all">
+                          <h3 className="text-lg font-medium">{module.title}</h3>
+                          <span>+</span>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="p-4 border-t">
+                          <p>{module.content}</p>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    ))
+                  ) : (
+                    <>
+                      <Collapsible>
+                        <CollapsibleTrigger className="flex justify-between items-center w-full p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all">
+                          <h3 className="text-lg font-medium">Módulo 1: Fundamentos</h3>
+                          <span>+</span>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="p-4 border-t">
+                          <p>Introducción a los conceptos básicos de la materia. Teoría y práctica inicial.</p>
+                        </CollapsibleContent>
+                      </Collapsible>
+                      
+                      <Collapsible>
+                        <CollapsibleTrigger className="flex justify-between items-center w-full p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all">
+                          <h3 className="text-lg font-medium">Módulo 2: Desarrollo de habilidades</h3>
+                          <span>+</span>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="p-4 border-t">
+                          <p>Implementación de los conceptos aprendidos en ejercicios prácticos.</p>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </>
+                  )}
                 </div>
                 
                 <div className="mt-8">
@@ -406,17 +394,41 @@ const ProgramDetail = () => {
                 <h2 className="text-2xl font-bold mb-6">Preguntas frecuentes</h2>
                 
                 <div className="space-y-4">
-                  {programDetails.faqs.map((faq, index) => (
-                    <Collapsible key={index}>
-                      <CollapsibleTrigger className="flex justify-between items-center w-full p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all">
-                        <h3 className="text-lg font-medium">{faq.question}</h3>
-                        <span>+</span>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="p-4 border-t">
-                        <p>{faq.answer}</p>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  ))}
+                  {program.faqs && program.faqs.length > 0 ? (
+                    program.faqs.map((faq, index) => (
+                      <Collapsible key={index}>
+                        <CollapsibleTrigger className="flex justify-between items-center w-full p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all">
+                          <h3 className="text-lg font-medium">{faq.question}</h3>
+                          <span>+</span>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="p-4 border-t">
+                          <p>{faq.answer}</p>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    ))
+                  ) : (
+                    <>
+                      <Collapsible>
+                        <CollapsibleTrigger className="flex justify-between items-center w-full p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all">
+                          <h3 className="text-lg font-medium">¿Necesito conocimientos previos?</h3>
+                          <span>+</span>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="p-4 border-t">
+                          <p>Depende del nivel del programa. Los cursos de nivel principiante no requieren conocimientos previos, mientras que los intermedios y avanzados sí requieren una base.</p>
+                        </CollapsibleContent>
+                      </Collapsible>
+                      
+                      <Collapsible>
+                        <CollapsibleTrigger className="flex justify-between items-center w-full p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all">
+                          <h3 className="text-lg font-medium">¿Cómo son las clases?</h3>
+                          <span>+</span>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="p-4 border-t">
+                          <p>Las clases combinan teoría con práctica. Incluyen videos explicativos, material de lectura, ejercicios prácticos y proyectos reales.</p>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </>
+                  )}
                 </div>
                 
                 <div className="mt-8 p-6 bg-gray-50 rounded-lg">
