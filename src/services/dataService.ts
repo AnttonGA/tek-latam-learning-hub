@@ -1,4 +1,6 @@
 // Tipos de datos para nuestra aplicación
+import { ContactMessage } from '@/types';
+
 export interface Program {
   id: string;
   title: string;
