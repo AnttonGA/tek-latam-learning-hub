@@ -2,8 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface CourseCardProps {
+  id: string;
   title: string;
   instructor: string;
   level: string;
@@ -14,6 +16,7 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({
+  id,
   title,
   instructor,
   level,
@@ -22,6 +25,16 @@ const CourseCard = ({
   imageUrl,
   onClick
 }: CourseCardProps) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(`/programa/${id}`);
+    }
+  };
+
   return (
     <Card className="overflow-hidden transition-shadow hover:shadow-lg">
       <div className="aspect-video overflow-hidden">
@@ -45,7 +58,7 @@ const CourseCard = ({
       <CardFooter>
         <Button 
           className="w-full bg-teklatam-blue hover:bg-teklatam-blue/90"
-          onClick={onClick}
+          onClick={handleClick}
         >
           Más información
         </Button>

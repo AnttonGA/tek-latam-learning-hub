@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import Nosotros from "./pages/Nosotros";
+import ProgramDetail from "./pages/ProgramDetail";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Create a QueryClient instance
@@ -27,6 +28,7 @@ const App: React.FC = () => {
               <Route path="/" element={<Index />} />
               <Route path="/nosotros" element={<Nosotros />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/programa/:id" element={<ProgramDetail />} />
               <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
               {/* Add more routes here as we develop them */}
               <Route path="*" element={<NotFound />} />

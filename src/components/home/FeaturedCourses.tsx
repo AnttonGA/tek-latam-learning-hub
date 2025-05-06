@@ -113,13 +113,13 @@ const FeaturedCourses = () => {
                 {getFilteredPrograms('curso').map((program) => (
                   <CourseCard 
                     key={program.id}
+                    id={program.id}
                     title={program.title}
                     instructor={program.instructor}
                     level={program.level}
                     students={program.students}
                     description={program.description}
                     imageUrl={program.image}
-                    onClick={scrollToContact}
                   />
                 ))}
               </div>
@@ -155,13 +155,13 @@ const FeaturedCourses = () => {
                 {getFilteredPrograms('diplomado').map((program) => (
                   <CourseCard 
                     key={program.id}
+                    id={program.id}
                     title={program.title}
                     instructor={program.instructor}
                     level={program.level}
                     students={program.students}
                     description={program.description}
                     imageUrl={program.image}
-                    onClick={scrollToContact}
                   />
                 ))}
               </div>
@@ -197,13 +197,13 @@ const FeaturedCourses = () => {
                 {getFilteredPrograms('maestria').map((program) => (
                   <CourseCard 
                     key={program.id}
+                    id={program.id}
                     title={program.title}
                     instructor={program.instructor}
                     level={program.level}
                     students={program.students}
                     description={program.description}
                     imageUrl={program.image}
-                    onClick={scrollToContact}
                   />
                 ))}
               </div>
