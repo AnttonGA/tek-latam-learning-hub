@@ -364,6 +364,58 @@ const generateRecentActivity = () => {
   })).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()); // Ordena por más reciente
 };
 
+// Get contact messages from localStorage
+export const getContactMessages = (): ContactMessage[] => {
+  try {
+    const storedMessages = localStorage.getItem('contactMessages');
+    return storedMessages ? JSON.parse(storedMessages) : [];
+  } catch (error) {
+    console.error('Error loading contact messages:', error);
+    return [];
+  }
+};
+
+// Save a new contact message
+export const saveContactMessage = (message: ContactMessage): void => {
+  try {
+    const messages = getContactMessages();
+    messages.push(message);
+    localStorage.setItem('contactMessages', JSON.stringify(messages));
+  } catch (error) {
+    console.error('Error saving contact message:', error);
+    throw new Error('Failed to save contact message');
+  }
+};
+
+// Update an existing contact message
+export const updateContactMessage = (updatedMessage: ContactMessage): void => {
+  try {
+    const messages = getContactMessages();
+    const index = messages.findIndex(message => message.id === updatedMessage.id);
+    if (index !== -1) {
+      messages[index] = updatedMessage;
+      localStorage.setItem('contactMessages', JSON.stringify(messages));
+    } else {
+      throw new Error('Message not found');
+    }
+  } catch (error) {
+    console.error('Error updating contact message:', error);
+    throw new Error('Failed to update contact message');
+  }
+};
+
+// Delete a contact message
+export const deleteContactMessage = (id: string): void => {
+  try {
+    const messages = getContactMessages();
+    const filtered = messages.filter(message => message.id !== id);
+    localStorage.setItem('contactMessages', JSON.stringify(filtered));
+  } catch (error) {
+    console.error('Error deleting contact message:', error);
+    throw new Error('Failed to delete contact message');
+  }
+};
+
 // Exportar todas las funciones
 export const dataService = {
   // Getters
@@ -389,5 +441,17 @@ export const dataService = {
   deleteTestimonial,
   
   // Actualizar contenido del sitio
-  saveSiteContent
+  saveSiteContent,
+  
+  // Get contact messages
+  getContactMessages,
+  
+  // Save a new contact message
+  saveContactMessage,
+  
+  // Update an existing contact message
+  updateContactMessage,
+  
+  // Delete a contact message
+  deleteContactMessage
 };

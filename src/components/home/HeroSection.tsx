@@ -85,20 +85,20 @@ const HeroSection = () => {
                     
                     <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start animate-slide-up" style={{ animationDelay: '0.4s' }}>
                       <Button 
-                        size="lg" 
-                        className="bg-teklatam-orange hover:bg-teklatam-orange/90 text-white px-8 py-6 text-lg h-auto"
+                        size="default" 
+                        className="bg-teklatam-orange hover:bg-teklatam-orange/90 text-white"
                         onClick={() => scrollToSection('programas')}
                       >
-                        <GraduationCap className="mr-2 size-5" />
+                        <GraduationCap className="mr-2" />
                         Ver Programas
                       </Button>
                       <Button 
-                        size="lg" 
+                        size="default" 
                         variant="outline" 
-                        className="border-2 border-white text-white hover:bg-white/10 hover:text-white px-8 py-6 text-lg h-auto"
+                        className="border-2 border-white text-white hover:bg-white/10 hover:text-white"
                         onClick={() => scrollToSection('nosotros')}
                       >
-                        <Book className="mr-2 size-5" />
+                        <Book className="mr-2" />
                         Conoce Más
                       </Button>
                     </div>

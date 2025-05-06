@@ -42,10 +42,10 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow">
-        {/* Hero section sin restricción de ancho */}
+        {/* Hero section sin restricción de ancho y sin margen inferior */}
         <HeroSection />
         
-        {/* El resto de secciones con contenedor */}
+        {/* El resto de secciones con contenedor, eliminamos espacio superior en FeaturedCourses */}
         <div className="teklatam-container">
           <FeaturedCourses />
           <InstructorsSection />

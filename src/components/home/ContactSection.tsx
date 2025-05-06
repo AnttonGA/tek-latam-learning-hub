@@ -5,53 +5,78 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Check } from "lucide-react";
+import { Check, Loader } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { dataService } from '@/services/dataService';
+
+// Define schema for form validation
+const contactFormSchema = z.object({
+  name: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres" }),
+  email: z.string().email({ message: "Introduce un email válido" }),
+  phone: z.string().optional(),
+  message: z.string().min(10, { message: "El mensaje debe tener al menos 10 caracteres" }),
+  program: z.string().optional()
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const ContactSection = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-    program: ''
-  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  
+  // Initialize react-hook-form with zod validation
+  const form = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
+      program: ''
+    }
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
     
-    // Simular envío de formulario
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Use dataService to save the contact message
+      await dataService.saveContactMessage({
+        id: Date.now().toString(), // Generate a unique ID
+        name: data.name,
+        email: data.email,
+        phone: data.phone || '',
+        message: data.message,
+        program: data.program || '',
+        date: new Date().toISOString(),
+        status: 'new' // Initial status for new messages
+      });
+      
       setIsSubmitted(true);
       toast({
         title: "Mensaje enviado",
         description: "Hemos recibido tu mensaje. Te contactaremos pronto.",
       });
       
-      // Resetear formulario después de 3 segundos
+      // Reset form after 3 seconds
       setTimeout(() => {
         setIsSubmitted(false);
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          message: '',
-          program: ''
-        });
+        form.reset();
       }, 3000);
-    }, 1500);
+    } catch (error) {
+      console.error("Error al enviar el mensaje:", error);
+      toast({
+        title: "Error",
+        description: "Ha ocurrido un error al enviar el mensaje. Inténtelo de nuevo.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -76,83 +101,106 @@ const ContactSection = () => {
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Nombre completo</Label>
-                  <Input 
-                    id="name" 
-                    name="name" 
-                    value={formData.name} 
-                    onChange={handleChange} 
-                    required 
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white p-8 rounded-lg shadow-md">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre completo</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Correo electrónico</FormLabel>
+                        <FormControl>
+                          <Input type="email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Teléfono (opcional)</FormLabel>
+                        <FormControl>
+                          <Input type="tel" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="program"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Programa de interés</FormLabel>
+                        <FormControl>
+                          <select 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                            {...field}
+                          >
+                            <option value="">Selecciona un programa</option>
+                            <option value="fullstack">Desarrollo Full Stack</option>
+                            <option value="datascience">Ciencia de Datos</option>
+                            <option value="webdev">Desarrollo Web</option>
+                            <option value="cybersecurity">Ciberseguridad</option>
+                            <option value="other">Otro</option>
+                          </select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem className="md:col-span-2">
+                        <FormLabel>Mensaje</FormLabel>
+                        <FormControl>
+                          <Textarea rows={4} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="email">Correo electrónico</Label>
-                  <Input 
-                    id="email" 
-                    name="email" 
-                    type="email" 
-                    value={formData.email} 
-                    onChange={handleChange} 
-                    required 
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Teléfono</Label>
-                  <Input 
-                    id="phone" 
-                    name="phone" 
-                    type="tel" 
-                    value={formData.phone} 
-                    onChange={handleChange} 
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="program">Programa de interés</Label>
-                  <select 
-                    id="program" 
-                    name="program" 
-                    value={formData.program} 
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                <div className="mt-8">
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-teklatam-orange hover:bg-teklatam-orange/90"
+                    disabled={isSubmitting}
                   >
-                    <option value="">Selecciona un programa</option>
-                    <option value="fullstack">Desarrollo Full Stack</option>
-                    <option value="datascience">Ciencia de Datos</option>
-                    <option value="webdev">Desarrollo Web</option>
-                    <option value="cybersecurity">Ciberseguridad</option>
-                    <option value="other">Otro</option>
-                  </select>
+                    {isSubmitting ? (
+                      <>
+                        <Loader className="mr-2 h-4 w-4 animate-spin" />
+                        Enviando...
+                      </>
+                    ) : "Enviar mensaje"}
+                  </Button>
                 </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="message">Mensaje</Label>
-                  <Textarea 
-                    id="message" 
-                    name="message" 
-                    value={formData.message} 
-                    onChange={handleChange} 
-                    rows={4} 
-                    required 
-                  />
-                </div>
-              </div>
-              
-              <div className="mt-8">
-                <Button 
-                  type="submit" 
-                  className="w-full bg-teklatam-orange hover:bg-teklatam-orange/90"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Enviando..." : "Enviar mensaje"}
-                </Button>
-              </div>
-            </form>
+              </form>
+            </Form>
           )}
         </div>
       </div>
