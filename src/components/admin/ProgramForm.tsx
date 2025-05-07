@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { Program, ProgramModule, ProgramFAQ } from "@/services/dataService";
+import { useState, useEffect } from "react";
+import { Program, ProgramModule, ProgramFAQ, dataService, Instructor } from "@/services/dataService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,6 +46,13 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
   });
 
   const [activeTab, setActiveTab] = useState("basic");
+  const [instructors, setInstructors] = useState<Instructor[]>([]);
+
+  useEffect(() => {
+    // Cargar la lista de instructores al montar el componente
+    const loadedInstructors = dataService.getInstructors();
+    setInstructors(loadedInstructors);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -231,13 +237,27 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="instructor">Instructor</Label>
-                  <Input
-                    id="instructor"
-                    name="instructor"
+                  <Select
                     value={formData.instructor}
-                    onChange={handleChange}
-                    required
-                  />
+                    onValueChange={(value) => handleSelectChange("instructor", value)}
+                  >
+                    <SelectTrigger id="instructor">
+                      <SelectValue placeholder="Selecciona un instructor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {instructors.length > 0 ? (
+                        instructors.map((instructor) => (
+                          <SelectItem key={instructor.id} value={instructor.name}>
+                            {instructor.name}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="" disabled>
+                          No hay instructores disponibles
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="level">Nivel</Label>
