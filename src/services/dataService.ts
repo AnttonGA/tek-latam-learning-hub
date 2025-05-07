@@ -496,6 +496,11 @@ const getPrograms = (): Program[] => {
   return defaultPrograms;
 };
 
+const getProgramById = (id: string): Program | undefined => {
+  const programs = getPrograms();
+  return programs.find(program => program.id === id);
+};
+
 const getInstructors = (): Instructor[] => {
   const storedData = localStorage.getItem('teklatam_instructors');
   if (storedData) {
@@ -775,6 +780,7 @@ export const dataService = {
   getTestimonials,
   getSiteContent,
   getStats,
+  getProgramById, // Añadimos la nueva función aquí
   
   // CRUD para programas
   addProgram,

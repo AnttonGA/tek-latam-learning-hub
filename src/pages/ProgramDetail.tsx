@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { dataService, Program, Instructor } from "@/services/dataService";
@@ -140,7 +139,7 @@ const ProgramDetail = () => {
                   <div className="flex items-center">
                     <span className="mx-1 text-teklatam-gray-400">/</span>
                     <span className="text-sm text-teklatam-gray-500 truncate max-w-[200px]">
-                      {program.title}
+                      {program?.title || 'Cargando...'}
                     </span>
                   </div>
                 </li>
