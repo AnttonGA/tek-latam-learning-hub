@@ -1,5 +1,5 @@
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { dataService } from '@/services/dataService';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { SiteContent } from "@/types"; // Import types from our types file
 
 const HeroSection = () => {
   const [content, setContent] = useState<SiteContent | null>(null);
-  const [activeSlide, setActiveSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,12 +56,26 @@ const HeroSection = () => {
     }
   };
 
+  // Función para actualizar el indicador de diapositiva actual
+  const handleSlideChange = (api: any) => {
+    if (!api) return;
+    const currentSlideIndex = api.selectedScrollSnap();
+    setCurrentSlide(currentSlideIndex);
+  };
+
   return (
     <section className="relative w-full">
-      <Carousel className="w-full overflow-hidden h-[80vh]">
+      <Carousel 
+        className="w-full overflow-hidden h-[80vh]"
+        opts={{
+          loop: true,
+          align: "start",
+        }}
+        onSelect={handleSlideChange}
+      >
         <CarouselContent>
           {content.heroSlides.map((slide, index) => (
-            <CarouselItem key={slide.id} className="h-full">
+            <CarouselItem key={slide.id} className="h-full w-full">
               <div className="relative h-full w-full">
                 {/* Imagen de fondo */}
                 <div 
@@ -85,16 +99,18 @@ const HeroSection = () => {
                       {slide.subtitle}
                     </p>
                     
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start animate-slide-up" style={{ animationDelay: '0.4s' }}>
-                      <Button 
-                        size="default" 
-                        className="bg-teklatam-orange hover:bg-teklatam-orange/90 text-white"
-                        onClick={() => handleButtonClick(slide.buttonLink)}
-                      >
-                        <GraduationCap className="mr-2" />
-                        {slide.buttonText || 'Ver Más'}
-                      </Button>
-                    </div>
+                    {slide.buttonText && slide.buttonLink && (
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                        <Button 
+                          size="default" 
+                          className="bg-teklatam-orange hover:bg-teklatam-orange/90 text-white"
+                          onClick={() => handleButtonClick(slide.buttonLink)}
+                        >
+                          <GraduationCap className="mr-2" />
+                          {slide.buttonText || 'Ver Más'}
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -121,7 +137,7 @@ const HeroSection = () => {
           {content.heroSlides.map((_, index) => (
             <span 
               key={index} 
-              className={`w-3 h-3 rounded-full block ${activeSlide === index ? 'bg-white' : 'bg-white/50'}`}
+              className={`w-3 h-3 rounded-full block ${currentSlide === index ? 'bg-white' : 'bg-white/50'}`}
             ></span>
           ))}
         </div>
