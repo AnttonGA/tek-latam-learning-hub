@@ -1,3 +1,4 @@
+
 export interface Course {
   id: string;
   title: string;
@@ -81,6 +82,17 @@ export interface HeroSlide {
   subtitle: string;
   buttonText?: string;
   buttonLink?: string;
+}
+
+// Add this type for contact messages
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  subject?: string;
+  createdAt: Date;
+  status: 'new' | 'read' | 'replied';
 }
 
 // Actualizamos SiteContent para incluir heroSlides

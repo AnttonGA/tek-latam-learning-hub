@@ -8,11 +8,17 @@ interface ImageUploaderProps {
   id: string;
   value: string;
   onChange: (value: string) => void;
-  label: string;
+  label?: string; // Make label optional with a default value
   previewClassName?: string;
 }
 
-const ImageUploader = ({ id, value, onChange, label, previewClassName = "h-32 w-auto" }: ImageUploaderProps) => {
+const ImageUploader = ({ 
+  id, 
+  value, 
+  onChange, 
+  label = "Imagen", // Default value for label
+  previewClassName = "h-32 w-auto" 
+}: ImageUploaderProps) => {
   const [loading, setLoading] = useState(false);
   
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {

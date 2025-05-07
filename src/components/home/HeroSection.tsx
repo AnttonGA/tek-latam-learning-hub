@@ -1,10 +1,11 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
-import { dataService, SiteContent, HeroSlide } from '@/services/dataService';
+import { dataService } from '@/services/dataService';
 import { useNavigate } from 'react-router-dom';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Book, GraduationCap, ChevronLeft, ChevronRight } from "lucide-react";
+import { SiteContent } from "@/types"; // Import types from our types file
 
 const HeroSection = () => {
   const [content, setContent] = useState<SiteContent | null>(null);

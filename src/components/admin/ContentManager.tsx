@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { dataService, SiteContent, HeroSlide } from "@/services/dataService";
+import { dataService } from "@/services/dataService";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { v4 as uuidv4 } from 'uuid';
+import { SiteContent, HeroSlide } from "@/types";
 
 const ContentManager = () => {
   const [content, setContent] = useState<SiteContent | null>(null);
@@ -233,11 +234,11 @@ const ContentManager = () => {
                     </div>
                     
                     <div className="space-y-3">
-                      <Label className="block text-sm font-medium mb-1">Imagen de fondo</Label>
                       <ImageUploader
                         id={`hero-slide-image-${index}`}
                         value={slide.imageUrl}
                         onChange={(value) => handleSlideImageChange(index, value)}
+                        label="Imagen de fondo"
                         previewClassName="w-full h-32 object-cover"
                       />
                     </div>
