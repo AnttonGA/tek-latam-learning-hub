@@ -52,6 +52,14 @@ export interface SiteContent {
   heroTitle: string;
   heroDescription: string;
   heroImage: string;
+  heroSlides: {
+    id: string;
+    imageUrl: string;
+    title: string;
+    subtitle: string;
+    buttonText: string;
+    buttonLink: string;
+  }[];
   ctaTitle: string;
   ctaDescription: string;
 }
@@ -460,11 +468,37 @@ const defaultTestimonials: Testimonial[] = [
 ];
 
 const defaultSiteContent: SiteContent = {
-  heroTitle: "Formación tecnológica de clase mundial para Latinoamérica",
-  heroDescription: "Programas de especialización diseñados por expertos de la industria para formar los profesionales tecnológicos que la región necesita.",
-  heroImage: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4",
-  ctaTitle: "Transforma tu futuro con las habilidades más demandadas",
-  ctaDescription: "Avanza tu carrera profesional con programas formativos diseñados para el mercado latinoamericano."
+  heroTitle: 'Formación especializada para el sector tecnológico en Latinoamérica',
+  heroDescription: 'Programa de alta calidad para desarrolladores y profesionales IT que quieren especializarse y avanzar en su carrera profesional',
+  heroImage: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+  heroSlides: [
+    {
+      id: '1',
+      imageUrl: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+      title: 'Formación tecnológica especializada',
+      subtitle: 'Aprende con expertos del sector y obtén certificaciones reconocidas a nivel internacional',
+      buttonText: 'Ver Programas',
+      buttonLink: '#programas'
+    },
+    {
+      id: '2',
+      imageUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158',
+      title: 'Impulsa tu carrera profesional',
+      subtitle: 'Programas diseñados para las demandas actuales del mercado tecnológico en Latinoamérica',
+      buttonText: 'Conoce Más',
+      buttonLink: '#nosotros'
+    },
+    {
+      id: '3',
+      imageUrl: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
+      title: 'Aprendizaje flexible y práctico',
+      subtitle: 'Metodología que combina teoría y práctica con horarios compatibles con tu vida profesional',
+      buttonText: 'Contactar',
+      buttonLink: '#contacto'
+    }
+  ],
+  ctaTitle: 'Transforma tu futuro profesional',
+  ctaDescription: 'Únete a nuestra comunidad de estudiantes y profesionales que están cambiando el panorama tecnológico en Latinoamérica.'
 };
 
 // Funciones para obtener los datos
@@ -497,12 +531,51 @@ const getTestimonials = (): Testimonial[] => {
 };
 
 const getSiteContent = (): SiteContent => {
-  const storedData = localStorage.getItem('teklatam_site_content');
-  if (storedData) {
-    return JSON.parse(storedData);
+  try {
+    const storedContent = localStorage.getItem('siteContent');
+    if (storedContent) {
+      return JSON.parse(storedContent);
+    } else {
+      // Contenido por defecto
+      const defaultContent: SiteContent = {
+        heroTitle: 'Formación especializada para el sector tecnológico en Latinoamérica',
+        heroDescription: 'Programa de alta calidad para desarrolladores y profesionales IT que quieren especializarse y avanzar en su carrera profesional',
+        heroImage: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+        heroSlides: [
+          {
+            id: '1',
+            imageUrl: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+            title: 'Formación tecnológica especializada',
+            subtitle: 'Aprende con expertos del sector y obtén certificaciones reconocidas a nivel internacional',
+            buttonText: 'Ver Programas',
+            buttonLink: '#programas'
+          },
+          {
+            id: '2',
+            imageUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158',
+            title: 'Impulsa tu carrera profesional',
+            subtitle: 'Programas diseñados para las demandas actuales del mercado tecnológico en Latinoamérica',
+            buttonText: 'Conoce Más',
+            buttonLink: '#nosotros'
+          },
+          {
+            id: '3',
+            imageUrl: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
+            title: 'Aprendizaje flexible y práctico',
+            subtitle: 'Metodología que combina teoría y práctica con horarios compatibles con tu vida profesional',
+            buttonText: 'Contactar',
+            buttonLink: '#contacto'
+          }
+        ],
+        ctaTitle: 'Transforma tu futuro profesional',
+        ctaDescription: 'Únete a nuestra comunidad de estudiantes y profesionales que están cambiando el panorama tecnológico en Latinoamérica.'
+      };
+      return defaultContent;
+    }
+  } catch (error) {
+    console.error("Error al cargar el contenido del sitio:", error);
+    throw error;
   }
-  localStorage.setItem('teklatam_site_content', JSON.stringify(defaultSiteContent));
-  return defaultSiteContent;
 };
 
 // Funciones para guardar datos
@@ -519,7 +592,7 @@ const saveTestimonials = (testimonials: Testimonial[]): void => {
 };
 
 const saveSiteContent = (content: SiteContent): void => {
-  localStorage.setItem('teklatam_site_content', JSON.stringify(content));
+  localStorage.setItem('siteContent', JSON.stringify(content));
 };
 
 // Funciones para gestionar datos (CRUD)
