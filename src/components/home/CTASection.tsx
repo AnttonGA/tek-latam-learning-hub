@@ -1,7 +1,8 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { dataService, SiteContent } from '@/services/dataService';
+import { dataService } from '@/services/dataService';
+import { SiteContent } from '@/types';
 
 const CTASection = () => {
   const [content, setContent] = useState<SiteContent | null>(null);
