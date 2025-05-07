@@ -1,10 +1,10 @@
-
 import { useEffect, useState } from "react";
 import { dataService, Program } from "@/services/dataService";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PenSquare, Trash2, Plus } from "lucide-react";
+import { PenSquare, Trash2, Plus, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import ProgramForm from "./ProgramForm";
 
 const ProgramsManager = () => {
@@ -13,6 +13,7 @@ const ProgramsManager = () => {
   const [currentProgram, setCurrentProgram] = useState<Program | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadPrograms();
@@ -52,6 +53,10 @@ const ProgramsManager = () => {
         });
       }
     }
+  };
+
+  const handlePreview = (programId: string) => {
+    navigate(`/programa/${programId}`);
   };
 
   const handleSave = (program: Omit<Program, "id"> | Program) => {
@@ -140,13 +145,27 @@ const ProgramsManager = () => {
                     <td className="py-3 px-4">{program.students}</td>
                     <td className="py-3 px-4">
                       <div className="flex justify-center space-x-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleEdit(program)}>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => handlePreview(program.id)}
+                          title="Ver página del programa"
+                        >
+                          <Eye className="h-4 w-4 text-teklatam-gray-600" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => handleEdit(program)}
+                          title="Editar programa"
+                        >
                           <PenSquare className="h-4 w-4 text-teklatam-blue" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(program.id)}
+                          title="Eliminar programa"
                         >
                           <Trash2 className="h-4 w-4 text-red-500" />
                         </Button>
