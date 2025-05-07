@@ -84,15 +84,17 @@ export interface HeroSlide {
   buttonLink?: string;
 }
 
-// Add this type for contact messages
+// Update ContactMessage interface to include all needed properties
 export interface ContactMessage {
   id: string;
   name: string;
   email: string;
   message: string;
   subject?: string;
-  createdAt: Date;
-  status: 'new' | 'read' | 'replied';
+  phone?: string;
+  program?: string;
+  date: string;  // Changed from createdAt: Date to match how it's used
+  status: 'new' | 'read' | 'replied' | 'archived'; // Added 'archived' status
 }
 
 // Actualizamos SiteContent para incluir heroSlides

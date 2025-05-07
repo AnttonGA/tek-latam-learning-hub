@@ -1,5 +1,5 @@
 // Tipos de datos para nuestra aplicación
-import { ContactMessage } from '@/types';
+import { ContactMessage, SiteContent } from '@/types';
 
 export interface Program {
   id: string;
@@ -46,22 +46,6 @@ export interface Testimonial {
   company: string;
   text: string;
   image: string;
-}
-
-export interface SiteContent {
-  heroTitle: string;
-  heroDescription: string;
-  heroImage: string;
-  heroSlides: {
-    id: string;
-    imageUrl: string;
-    title: string;
-    subtitle: string;
-    buttonText: string;
-    buttonLink: string;
-  }[];
-  ctaTitle: string;
-  ctaDescription: string;
 }
 
 // Datos iniciales por defecto

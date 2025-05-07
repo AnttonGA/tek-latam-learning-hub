@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,7 +51,7 @@ const ContactSection = () => {
         phone: data.phone || '',
         message: data.message,
         program: data.program || '',
-        date: new Date().toISOString(),
+        date: new Date().toISOString(), // Use date instead of createdAt
         status: 'new' // Initial status for new messages
       });
       
