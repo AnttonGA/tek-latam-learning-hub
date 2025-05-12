@@ -39,7 +39,7 @@ const Navbar = () => {
             <img 
               src="/lovable-uploads/76589c46-9636-4c03-a68d-7af74a38740e.png" 
               alt="TekLatam Logo" 
-              className="h-10"
+              className="h-12"
             />
           </Link>
 
