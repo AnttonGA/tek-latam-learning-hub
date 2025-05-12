@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +36,11 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="text-teklatam-blue text-xl font-bold">Tek<span className="text-teklatam-orange">Latam</span></span>
+            <img 
+              src="/lovable-uploads/76589c46-9636-4c03-a68d-7af74a38740e.png" 
+              alt="TekLatam Logo" 
+              className="h-10"
+            />
           </Link>
 
           {/* Desktop Navigation */}
