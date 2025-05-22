@@ -16,10 +16,20 @@ const CTASection = () => {
     }
   }, []);
 
+  // Función mejorada para scrollear a las secciones
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
+    console.log("Intentando navegar a la sección desde CTA:", sectionId);
+    
+    // Asegurarse de que sectionId no tenga un # al inicio
+    const cleanSectionId = sectionId.replace(/^#+/, '');
+    
+    const element = document.getElementById(cleanSectionId);
     if (element) {
+      console.log("Elemento encontrado, haciendo scroll a:", cleanSectionId);
       element.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      console.log("Elemento no encontrado, redirigiendo a /#" + cleanSectionId);
+      window.location.href = `/#${cleanSectionId}`;
     }
   };
 

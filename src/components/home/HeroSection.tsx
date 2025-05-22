@@ -60,15 +60,23 @@ const HeroSection = () => {
     }
   }, []);
 
-  // Mejorada la función de scrollToSection para asegurarse de que encuentra las secciones correctamente
+  // Función mejorada para scrollear a las secciones o navegar a ellas
   const scrollToSection = (sectionId: string) => {
-    console.log("Scrolling to section:", sectionId);
-    const element = document.getElementById(sectionId);
+    console.log("Intentando navegar a la sección:", sectionId);
+    
+    // Asegurarse de que sectionId no tenga un # al inicio
+    const cleanSectionId = sectionId.replace(/^#+/, '');
+    
+    // Intentar encontrar el elemento por ID
+    const element = document.getElementById(cleanSectionId);
+    
     if (element) {
+      console.log("Elemento encontrado, haciendo scroll a:", cleanSectionId);
       element.scrollIntoView({ behavior: 'smooth' });
     } else {
-      // Si no existe el elemento, navegamos a la página usando window.location
-      window.location.href = `/#${sectionId}`;
+      // Si el elemento no existe, navegamos a la página principal con un hash
+      console.log("Elemento no encontrado, redirigiendo a /#" + cleanSectionId);
+      window.location.href = `/#${cleanSectionId}`;
     }
   };
 

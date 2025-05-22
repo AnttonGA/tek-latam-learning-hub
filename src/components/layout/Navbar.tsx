@@ -13,19 +13,32 @@ const Navbar = () => {
   };
 
   const scrollToSection = (sectionId: string) => {
+    console.log("Intentando scrollear a la sección desde Navbar:", sectionId);
     setIsOpen(false);
-    const element = document.getElementById(sectionId);
+    
+    // Asegurarse de que sectionId no tenga un # al inicio
+    const cleanSectionId = sectionId.replace(/^#+/, '');
+    
+    const element = document.getElementById(cleanSectionId);
     if (element) {
+      console.log("Elemento encontrado en página actual, haciendo scroll a:", cleanSectionId);
       element.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      console.log("Elemento no encontrado en la página actual");
+      // Si no existe el elemento, podemos estar en otra página
+      navigate(`/?section=${cleanSectionId}`);
     }
   };
 
   // Si estamos en otra página que no sea la principal, navegar a la página principal y luego al anchor
   const handleNavigation = (sectionId: string) => {
+    console.log("Intentando navegar a sección:", sectionId);
     const currentPath = window.location.pathname;
+    
     if (currentPath === '/') {
       scrollToSection(sectionId);
     } else {
+      console.log("No estamos en la página principal, navegando a:", `/?section=${sectionId}`);
       navigate(`/?section=${sectionId}`);
     }
   };

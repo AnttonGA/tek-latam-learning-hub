@@ -24,6 +24,16 @@ const Index = () => {
         const element = document.querySelector(cleanHash);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          console.error("Elemento no encontrado con selector:", cleanHash);
+          // Intentar buscar por ID sin el símbolo #
+          const elementById = document.getElementById(cleanHash.substring(1));
+          if (elementById) {
+            console.log("Elemento encontrado por ID:", cleanHash.substring(1));
+            elementById.scrollIntoView({ behavior: 'smooth' });
+          } else {
+            console.error("Elemento no encontrado por ID:", cleanHash.substring(1));
+          }
         }
       } catch (error) {
         console.error("Error al hacer scroll:", error);
@@ -33,11 +43,14 @@ const Index = () => {
       const params = new URLSearchParams(location.search);
       const section = params.get('section');
       if (section) {
+        console.log("Scrolling to section from query param:", section);
         const element = document.getElementById(section);
         if (element) {
           setTimeout(() => {
             element.scrollIntoView({ behavior: 'smooth' });
           }, 100);
+        } else {
+          console.error("Elemento no encontrado con ID desde query param:", section);
         }
       }
     } else {
@@ -51,11 +64,19 @@ const Index = () => {
       <main className="flex-grow">
         <HeroSection />
         <div className="teklatam-container">
-          <FeaturedCourses />
-          <InstructorsSection />
-          <TestimonialsSection />
+          <div id="programas">
+            <FeaturedCourses />
+          </div>
+          <div id="instructores">
+            <InstructorsSection />
+          </div>
+          <div id="testimonios">
+            <TestimonialsSection />
+          </div>
           <CTASection />
-          <ContactSection />
+          <div id="contacto">
+            <ContactSection />
+          </div>
         </div>
       </main>
       <Footer />
