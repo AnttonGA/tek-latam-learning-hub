@@ -16,12 +16,35 @@ const InstructorsManager = () => {
 
   useEffect(() => {
     loadInstructors();
+    
+    // Escuchar cambios en localStorage para actualizar la UI cuando se modifiquen datos en otras pestañas
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'teklatam_instructors' || e.key === 'teklatam_update_trigger') {
+        console.log("Detected storage change in InstructorsManager:", e.key);
+        loadInstructors();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const loadInstructors = () => {
-    const loadedInstructors = dataService.getInstructors();
-    setInstructors(loadedInstructors);
-    console.log("Instructores cargados:", loadedInstructors);
+    try {
+      const loadedInstructors = dataService.getInstructors();
+      setInstructors(loadedInstructors);
+      console.log("Instructores cargados:", loadedInstructors);
+    } catch (error) {
+      console.error("Error al cargar instructores:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudieron cargar los instructores.",
+      });
+    }
   };
 
   const handleAdd = () => {
@@ -43,6 +66,9 @@ const InstructorsManager = () => {
           description: "El instructor ha sido eliminado correctamente.",
         });
         loadInstructors();
+        
+        // Actualizar trigger para notificar a otras pestañas
+        window.localStorage.setItem('teklatam_update_trigger', Date.now().toString());
       } else {
         toast({
           variant: "destructive",
@@ -54,30 +80,39 @@ const InstructorsManager = () => {
   };
 
   const handleSave = (instructor: Omit<Instructor, "id"> | Instructor) => {
-    if ("id" in instructor) {
-      // Actualizar un instructor existente
-      const updated = dataService.updateInstructor(instructor as Instructor);
-      console.log("Instructor actualizado:", updated);
+    try {
+      if ("id" in instructor && instructor.id) {
+        // Actualizar un instructor existente
+        const updated = dataService.updateInstructor(instructor as Instructor);
+        console.log("Instructor actualizado:", updated);
+        toast({
+          title: "Instructor actualizado",
+          description: "El instructor ha sido actualizado correctamente.",
+        });
+      } else {
+        // Añadir un nuevo instructor
+        const added = dataService.addInstructor(instructor);
+        console.log("Instructor añadido:", added);
+        toast({
+          title: "Instructor creado",
+          description: "El nuevo instructor ha sido añadido correctamente.",
+        });
+      }
+      
+      // Para forzar la actualizacion en otras pestañas
+      window.localStorage.setItem('teklatam_update_trigger', Date.now().toString());
+      
+      setIsEditing(false);
+      setIsAdding(false);
+      loadInstructors(); // Recargar datos inmediatamente
+    } catch (error) {
+      console.error("Error al guardar instructor:", error);
       toast({
-        title: "Instructor actualizado",
-        description: "El instructor ha sido actualizado correctamente.",
-      });
-    } else {
-      // Añadir un nuevo instructor
-      const added = dataService.addInstructor(instructor);
-      console.log("Instructor añadido:", added);
-      toast({
-        title: "Instructor creado",
-        description: "El nuevo instructor ha sido añadido correctamente.",
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al guardar el instructor.",
       });
     }
-    
-    // Para forzar la actualizacion en otras pestañas
-    window.localStorage.setItem('teklatam_update_trigger', Date.now().toString());
-    
-    setIsEditing(false);
-    setIsAdding(false);
-    loadInstructors(); // Recargar datos inmediatamente
   };
 
   const handleCancel = () => {

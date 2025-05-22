@@ -36,7 +36,7 @@ const TestimonialsSection = () => {
     window.addEventListener('storage', handleStorageChange);
 
     // También podemos verificar periódicamente
-    const interval = setInterval(loadTestimonials, 5000); // Comprobar cada 5 segundos
+    const interval = setInterval(loadTestimonials, 10000); // Comprobar cada 10 segundos
 
     // Limpiar listeners y intervalos cuando el componente se desmonta
     return () => {

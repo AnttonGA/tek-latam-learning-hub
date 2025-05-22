@@ -43,7 +43,15 @@ const InstructorForm = ({ instructor, onSave, onCancel }: InstructorFormProps) =
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    
+    // Si estamos editando, asegurarnos de mantener el ID
+    if (instructor && instructor.id) {
+      onSave({...formData, id: instructor.id});
+    } else {
+      // Si estamos creando uno nuevo, omitir el ID vacío para que dataService genere uno nuevo
+      const { id, ...newInstructorData } = formData;
+      onSave(newInstructorData);
+    }
   };
 
   return (

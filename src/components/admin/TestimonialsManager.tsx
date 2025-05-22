@@ -16,12 +16,35 @@ const TestimonialsManager = () => {
 
   useEffect(() => {
     loadTestimonials();
+    
+    // Escuchar cambios en localStorage para actualizar la UI cuando se modifiquen datos en otras pestañas
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'teklatam_testimonials' || e.key === 'teklatam_update_trigger') {
+        console.log("Detected storage change in TestimonialsManager:", e.key);
+        loadTestimonials();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const loadTestimonials = () => {
-    const loadedTestimonials = dataService.getTestimonials();
-    setTestimonials(loadedTestimonials);
-    console.log("Testimonios cargados:", loadedTestimonials);
+    try {
+      const loadedTestimonials = dataService.getTestimonials();
+      setTestimonials(loadedTestimonials);
+      console.log("Testimonios cargados:", loadedTestimonials);
+    } catch (error) {
+      console.error("Error al cargar testimonios:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudieron cargar los testimonios.",
+      });
+    }
   };
 
   const handleAdd = () => {
@@ -43,6 +66,9 @@ const TestimonialsManager = () => {
           description: "El testimonio ha sido eliminado correctamente.",
         });
         loadTestimonials();
+        
+        // Actualizar trigger para notificar a otras pestañas
+        window.localStorage.setItem('teklatam_update_trigger', Date.now().toString());
       } else {
         toast({
           variant: "destructive",
@@ -54,30 +80,39 @@ const TestimonialsManager = () => {
   };
 
   const handleSave = (testimonial: Omit<Testimonial, "id"> | Testimonial) => {
-    if ("id" in testimonial) {
-      // Actualizar un testimonio existente
-      const updated = dataService.updateTestimonial(testimonial as Testimonial);
-      console.log("Testimonio actualizado:", updated);
+    try {
+      if ("id" in testimonial && testimonial.id) {
+        // Actualizar un testimonio existente
+        const updated = dataService.updateTestimonial(testimonial as Testimonial);
+        console.log("Testimonio actualizado:", updated);
+        toast({
+          title: "Testimonio actualizado",
+          description: "El testimonio ha sido actualizado correctamente.",
+        });
+      } else {
+        // Añadir un nuevo testimonio
+        const added = dataService.addTestimonial(testimonial);
+        console.log("Testimonio añadido:", added);
+        toast({
+          title: "Testimonio creado",
+          description: "El nuevo testimonio ha sido añadido correctamente.",
+        });
+      }
+      
+      // Para forzar la actualizacion en otras pestañas
+      window.localStorage.setItem('teklatam_update_trigger', Date.now().toString());
+      
+      setIsEditing(false);
+      setIsAdding(false);
+      loadTestimonials(); // Recargar datos inmediatamente
+    } catch (error) {
+      console.error("Error al guardar testimonio:", error);
       toast({
-        title: "Testimonio actualizado",
-        description: "El testimonio ha sido actualizado correctamente.",
-      });
-    } else {
-      // Añadir un nuevo testimonio
-      const added = dataService.addTestimonial(testimonial);
-      console.log("Testimonio añadido:", added);
-      toast({
-        title: "Testimonio creado",
-        description: "El nuevo testimonio ha sido añadido correctamente.",
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al guardar el testimonio.",
       });
     }
-    
-    // Para forzar la actualizacion en otras pestañas
-    window.localStorage.setItem('teklatam_update_trigger', Date.now().toString());
-    
-    setIsEditing(false);
-    setIsAdding(false);
-    loadTestimonials(); // Recargar datos inmediatamente
   };
 
   const handleCancel = () => {
