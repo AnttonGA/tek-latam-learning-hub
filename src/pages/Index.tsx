@@ -1,5 +1,4 @@
 
-import HeroSection from '@/components/home/HeroSection';
 import FeaturedCourses from '@/components/home/FeaturedCourses';
 import InstructorsSection from '@/components/home/InstructorsSection';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
@@ -42,10 +41,6 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow">
-        {/* Hero section sin restricción de ancho y sin margen inferior */}
-        <HeroSection />
-        
-        {/* El resto de secciones con contenedor, eliminamos espacio superior en FeaturedCourses */}
         <div className="teklatam-container">
           <FeaturedCourses />
           <InstructorsSection />
