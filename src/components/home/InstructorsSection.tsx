@@ -7,15 +7,39 @@ const InstructorsSection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Obtener instructores desde el servicio de datos
-    try {
-      const loadedInstructors = dataService.getInstructors();
-      setInstructors(loadedInstructors);
-    } catch (error) {
-      console.error("Error al cargar los instructores:", error);
-    } finally {
-      setLoading(false);
-    }
+    // Función para cargar los instructores
+    const loadInstructors = () => {
+      try {
+        const loadedInstructors = dataService.getInstructors();
+        setInstructors(loadedInstructors);
+      } catch (error) {
+        console.error("Error al cargar los instructores:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Cargar instructores cuando se monta el componente
+    loadInstructors();
+
+    // Definir un evento personalizado para recargar los datos cuando hay cambios
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'teklatam_instructors') {
+        loadInstructors();
+      }
+    };
+
+    // Escuchar cambios en el localStorage
+    window.addEventListener('storage', handleStorageChange);
+
+    // También podemos verificar periódicamente
+    const interval = setInterval(loadInstructors, 10000); // Comprobar cada 10 segundos
+
+    // Limpiar listeners y intervalos cuando el componente se desmonta
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
   }, []);
 
   if (loading) {

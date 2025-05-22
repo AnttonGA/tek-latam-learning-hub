@@ -42,6 +42,7 @@ const Index = () => {
       <Navbar />
       <main className="flex-grow">
         <div className="teklatam-container">
+          {/* Actualización: Se eliminó la Hero Section según solicitud anterior */}
           <FeaturedCourses />
           <InstructorsSection />
           <TestimonialsSection />

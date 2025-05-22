@@ -7,15 +7,39 @@ const TestimonialsSection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Obtener testimonios desde el servicio de datos
-    try {
-      const loadedTestimonials = dataService.getTestimonials();
-      setTestimonials(loadedTestimonials);
-    } catch (error) {
-      console.error("Error al cargar los testimonios:", error);
-    } finally {
-      setLoading(false);
-    }
+    // Función para cargar los testimonios
+    const loadTestimonials = () => {
+      try {
+        const loadedTestimonials = dataService.getTestimonials();
+        setTestimonials(loadedTestimonials);
+      } catch (error) {
+        console.error("Error al cargar los testimonios:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Cargar testimonios cuando se monta el componente
+    loadTestimonials();
+
+    // Definir un evento personalizado para recargar los datos cuando hay cambios
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'teklatam_testimonials') {
+        loadTestimonials();
+      }
+    };
+
+    // Escuchar cambios en el localStorage
+    window.addEventListener('storage', handleStorageChange);
+
+    // También podemos verificar periódicamente
+    const interval = setInterval(loadTestimonials, 10000); // Comprobar cada 10 segundos
+
+    // Limpiar listeners y intervalos cuando el componente se desmonta
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
   }, []);
 
   if (loading) {
