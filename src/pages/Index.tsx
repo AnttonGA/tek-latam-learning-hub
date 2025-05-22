@@ -4,6 +4,7 @@ import InstructorsSection from '@/components/home/InstructorsSection';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import CTASection from '@/components/home/CTASection';
 import ContactSection from '@/components/home/ContactSection';
+import HeroSection from '@/components/home/HeroSection';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useEffect } from 'react';
@@ -41,8 +42,8 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow">
+        <HeroSection />
         <div className="teklatam-container">
-          {/* Actualización: Se eliminó la Hero Section según solicitud anterior */}
           <FeaturedCourses />
           <InstructorsSection />
           <TestimonialsSection />
