@@ -60,10 +60,15 @@ const HeroSection = () => {
     }
   }, []);
 
+  // Mejorada la función de scrollToSection para asegurarse de que encuentra las secciones correctamente
   const scrollToSection = (sectionId: string) => {
+    console.log("Scrolling to section:", sectionId);
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      // Si no existe el elemento, navegamos a la página usando window.location
+      window.location.href = `/#${sectionId}`;
     }
   };
 
@@ -84,7 +89,7 @@ const HeroSection = () => {
           dragFree: false
         }}
         onSelect={(api) => {
-          if (api?.selectedScrollSnap !== undefined) {
+          if (api && typeof api.selectedScrollSnap === 'function') {
             setActiveIndex(api.selectedScrollSnap());
           }
         }}
