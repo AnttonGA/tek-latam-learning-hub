@@ -46,10 +46,10 @@ const InstructorForm = ({ instructor, onSave, onCancel }: InstructorFormProps) =
     
     // Use a type guard to check if 'id' exists and isn't empty
     if ('id' in formData && formData.id) {
-      onSave(formData);
+      onSave(formData as Instructor);
     } else {
       // If we're creating a new instructor, omit the ID
-      const { id, ...newInstructorData } = formData;
+      const { id, ...newInstructorData } = formData as any;
       onSave(newInstructorData);
     }
   };

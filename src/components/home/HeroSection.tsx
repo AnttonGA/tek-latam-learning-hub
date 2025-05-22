@@ -77,9 +77,18 @@ const HeroSection = () => {
 
   return (
     <section className="relative" id="hero">
-      <Carousel className="w-full" onSelect={(api) => {
-        if (api) setActiveIndex(api.selectedScrollSnap());
-      }}>
+      <Carousel 
+        className="w-full" 
+        opts={{ 
+          loop: true,
+          dragFree: false
+        }}
+        onSelect={(api) => {
+          if (api?.selectedScrollSnap !== undefined) {
+            setActiveIndex(api.selectedScrollSnap());
+          }
+        }}
+      >
         <CarouselContent>
           {content.heroSlides.map((slide: HeroSlide, index) => (
             <CarouselItem key={slide.id}>
