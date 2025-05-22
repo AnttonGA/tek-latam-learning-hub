@@ -88,8 +88,9 @@ const HeroSection = () => {
           loop: true,
           dragFree: false
         }}
-        onSelect={(api) => {
-          if (api && typeof api.selectedScrollSnap === 'function') {
+        onSelect={(api: any) => {
+          // Corregido para manejar correctamente la API de Embla Carousel
+          if (api && api.selectedScrollSnap) {
             setActiveIndex(api.selectedScrollSnap());
           }
         }}

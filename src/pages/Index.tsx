@@ -17,9 +17,16 @@ const Index = () => {
   useEffect(() => {
     if (location.hash) {
       // Si hay un hash en la URL, scrollear a esa sección
-      const element = document.querySelector(location.hash);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+      // Asegurarse de que solo hay un # en el selector
+      const cleanHash = location.hash.replace(/^#+/, '#');
+      console.log("Scrolling to section with clean hash:", cleanHash);
+      try {
+        const element = document.querySelector(cleanHash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      } catch (error) {
+        console.error("Error al hacer scroll:", error);
       }
     } else if (location.search) {
       // Comprobar si hay un parámetro de sección en la URL
