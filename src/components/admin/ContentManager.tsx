@@ -119,7 +119,7 @@ const ContentManager = () => {
     
     toast({
       title: "Diapositiva eliminada",
-      description: "Se ha eliminado la diapositiva del carrusel.",
+      description: "Se ha eliminada la diapositiva del carrusel.",
     });
   };
 
