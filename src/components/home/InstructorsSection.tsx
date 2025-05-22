@@ -11,6 +11,7 @@ const InstructorsSection = () => {
     const loadInstructors = () => {
       try {
         const loadedInstructors = dataService.getInstructors();
+        console.log("Sección de instructores: Datos cargados", loadedInstructors);
         setInstructors(loadedInstructors);
       } catch (error) {
         console.error("Error al cargar los instructores:", error);
@@ -24,7 +25,9 @@ const InstructorsSection = () => {
 
     // Definir un evento personalizado para recargar los datos cuando hay cambios
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'teklatam_instructors') {
+      console.log("Storage change detected:", e.key);
+      if (e.key === 'teklatam_instructors' || e.key === 'teklatam_update_trigger') {
+        console.log("Recargando instructores debido a cambios en localStorage");
         loadInstructors();
       }
     };
@@ -33,7 +36,7 @@ const InstructorsSection = () => {
     window.addEventListener('storage', handleStorageChange);
 
     // También podemos verificar periódicamente
-    const interval = setInterval(loadInstructors, 10000); // Comprobar cada 10 segundos
+    const interval = setInterval(loadInstructors, 5000); // Comprobar cada 5 segundos
 
     // Limpiar listeners y intervalos cuando el componente se desmonta
     return () => {

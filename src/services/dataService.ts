@@ -487,31 +487,46 @@ const defaultSiteContent: SiteContent = {
 
 // Funciones para obtener los datos
 const getPrograms = (): Program[] => {
-  const storedData = localStorage.getItem('teklatam_programs');
-  if (storedData) {
-    return JSON.parse(storedData);
+  try {
+    const storedData = localStorage.getItem('teklatam_programs');
+    if (storedData) {
+      return JSON.parse(storedData);
+    }
+    // Si no hay datos guardados, guardar los datos por defecto
+    localStorage.setItem('teklatam_programs', JSON.stringify(defaultPrograms));
+    return defaultPrograms;
+  } catch (error) {
+    console.error("Error loading programs data:", error);
+    return defaultPrograms;
   }
-  // Si no hay datos guardados, guardar los datos por defecto
-  localStorage.setItem('teklatam_programs', JSON.stringify(defaultPrograms));
-  return defaultPrograms;
 };
 
 const getInstructors = (): Instructor[] => {
-  const storedData = localStorage.getItem('teklatam_instructors');
-  if (storedData) {
-    return JSON.parse(storedData);
+  try {
+    const storedData = localStorage.getItem('teklatam_instructors');
+    if (storedData) {
+      return JSON.parse(storedData);
+    }
+    localStorage.setItem('teklatam_instructors', JSON.stringify(defaultInstructors));
+    return defaultInstructors;
+  } catch (error) {
+    console.error("Error loading instructors data:", error);
+    return defaultInstructors;
   }
-  localStorage.setItem('teklatam_instructors', JSON.stringify(defaultInstructors));
-  return defaultInstructors;
 };
 
 const getTestimonials = (): Testimonial[] => {
-  const storedData = localStorage.getItem('teklatam_testimonials');
-  if (storedData) {
-    return JSON.parse(storedData);
+  try {
+    const storedData = localStorage.getItem('teklatam_testimonials');
+    if (storedData) {
+      return JSON.parse(storedData);
+    }
+    localStorage.setItem('teklatam_testimonials', JSON.stringify(defaultTestimonials));
+    return defaultTestimonials;
+  } catch (error) {
+    console.error("Error loading testimonials data:", error);
+    return defaultTestimonials;
   }
-  localStorage.setItem('teklatam_testimonials', JSON.stringify(defaultTestimonials));
-  return defaultTestimonials;
 };
 
 const getSiteContent = (): SiteContent => {
@@ -564,15 +579,33 @@ const getSiteContent = (): SiteContent => {
 
 // Funciones para guardar datos
 const savePrograms = (programs: Program[]): void => {
-  localStorage.setItem('teklatam_programs', JSON.stringify(programs));
+  try {
+    localStorage.setItem('teklatam_programs', JSON.stringify(programs));
+    // Disparar un evento para notificar cambios
+    window.dispatchEvent(new Event('storage'));
+  } catch (error) {
+    console.error("Error saving programs:", error);
+  }
 };
 
 const saveInstructors = (instructors: Instructor[]): void => {
-  localStorage.setItem('teklatam_instructors', JSON.stringify(instructors));
+  try {
+    localStorage.setItem('teklatam_instructors', JSON.stringify(instructors));
+    // Disparar un evento para notificar cambios
+    window.dispatchEvent(new Event('storage'));
+  } catch (error) {
+    console.error("Error saving instructors:", error);
+  }
 };
 
 const saveTestimonials = (testimonials: Testimonial[]): void => {
-  localStorage.setItem('teklatam_testimonials', JSON.stringify(testimonials));
+  try {
+    localStorage.setItem('teklatam_testimonials', JSON.stringify(testimonials));
+    // Disparar un evento para notificar cambios
+    window.dispatchEvent(new Event('storage'));
+  } catch (error) {
+    console.error("Error saving testimonials:", error);
+  }
 };
 
 const saveSiteContent = (content: SiteContent): void => {
@@ -614,66 +647,108 @@ const deleteProgram = (id: string): boolean => {
 
 // Instructors
 const addInstructor = (instructor: Omit<Instructor, "id">): Instructor => {
-  const instructors = getInstructors();
-  const newInstructor = {
-    ...instructor,
-    id: Date.now().toString()
-  };
-  instructors.push(newInstructor);
-  saveInstructors(instructors);
-  return newInstructor;
+  try {
+    const instructors = getInstructors();
+    const newInstructor = {
+      ...instructor,
+      id: Date.now().toString()
+    };
+    instructors.push(newInstructor);
+    saveInstructors(instructors);
+    console.log("Instructor added successfully:", newInstructor);
+    return newInstructor;
+  } catch (error) {
+    console.error("Error adding instructor:", error);
+    throw new Error("Failed to add instructor");
+  }
 };
 
 const updateInstructor = (instructor: Instructor): Instructor => {
-  const instructors = getInstructors();
-  const index = instructors.findIndex(i => i.id === instructor.id);
-  if (index !== -1) {
-    instructors[index] = instructor;
-    saveInstructors(instructors);
+  try {
+    const instructors = getInstructors();
+    const index = instructors.findIndex(i => i.id === instructor.id);
+    if (index !== -1) {
+      instructors[index] = instructor;
+      saveInstructors(instructors);
+      console.log("Instructor updated successfully:", instructor);
+    } else {
+      console.warn("Instructor not found:", instructor.id);
+    }
+    return instructor;
+  } catch (error) {
+    console.error("Error updating instructor:", error);
+    throw new Error("Failed to update instructor");
   }
-  return instructor;
 };
 
 const deleteInstructor = (id: string): boolean => {
-  const instructors = getInstructors();
-  const filteredInstructors = instructors.filter(i => i.id !== id);
-  if (filteredInstructors.length < instructors.length) {
-    saveInstructors(filteredInstructors);
-    return true;
+  try {
+    const instructors = getInstructors();
+    const filteredInstructors = instructors.filter(i => i.id !== id);
+    if (filteredInstructors.length < instructors.length) {
+      saveInstructors(filteredInstructors);
+      console.log("Instructor deleted successfully:", id);
+      return true;
+    }
+    console.warn("Instructor not found for deletion:", id);
+    return false;
+  } catch (error) {
+    console.error("Error deleting instructor:", error);
+    return false;
   }
-  return false;
 };
 
 // Testimonials
 const addTestimonial = (testimonial: Omit<Testimonial, "id">): Testimonial => {
-  const testimonials = getTestimonials();
-  const newTestimonial = {
-    ...testimonial,
-    id: Date.now().toString()
-  };
-  testimonials.push(newTestimonial);
-  saveTestimonials(testimonials);
-  return newTestimonial;
+  try {
+    const testimonials = getTestimonials();
+    const newTestimonial = {
+      ...testimonial,
+      id: Date.now().toString()
+    };
+    testimonials.push(newTestimonial);
+    saveTestimonials(testimonials);
+    console.log("Testimonial added successfully:", newTestimonial);
+    return newTestimonial;
+  } catch (error) {
+    console.error("Error adding testimonial:", error);
+    throw new Error("Failed to add testimonial");
+  }
 };
 
 const updateTestimonial = (testimonial: Testimonial): Testimonial => {
-  const testimonials = getTestimonials();
-  const index = testimonials.findIndex(t => t.id === testimonial.id);
-  if (index !== -1) {
-    testimonials[index] = testimonial;
-    saveTestimonials(testimonials);
+  try {
+    const testimonials = getTestimonials();
+    const index = testimonials.findIndex(t => t.id === testimonial.id);
+    if (index !== -1) {
+      testimonials[index] = testimonial;
+      saveTestimonials(testimonials);
+      console.log("Testimonial updated successfully:", testimonial);
+    } else {
+      console.warn("Testimonial not found:", testimonial.id);
+    }
+    return testimonial;
+  } catch (error) {
+    console.error("Error updating testimonial:", error);
+    throw new Error("Failed to update testimonial");
   }
-  return testimonial;
 };
 
 const deleteTestimonial = (id: string): boolean => {
-  const testimonials = getTestimonials();
-  const filteredTestimonials = testimonials.filter(t => t.id !== id);
-  if (filteredTestimonials.length < testimonials.length) {
-    saveTestimonials(filteredTestimonials);
-    return true;
+  try {
+    const testimonials = getTestimonials();
+    const filteredTestimonials = testimonials.filter(t => t.id !== id);
+    if (filteredTestimonials.length < testimonials.length) {
+      saveTestimonials(filteredTestimonials);
+      console.log("Testimonial deleted successfully:", id);
+      return true;
+    }
+    console.warn("Testimonial not found for deletion:", id);
+    return false;
+  } catch (error) {
+    console.error("Error deleting testimonial:", error);
+    return false;
   }
-  return false;
 };
 
 // Estadísticas para el dashboard

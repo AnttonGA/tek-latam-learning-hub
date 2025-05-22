@@ -21,6 +21,7 @@ const InstructorsManager = () => {
   const loadInstructors = () => {
     const loadedInstructors = dataService.getInstructors();
     setInstructors(loadedInstructors);
+    console.log("Instructores cargados:", loadedInstructors);
   };
 
   const handleAdd = () => {
@@ -55,22 +56,28 @@ const InstructorsManager = () => {
   const handleSave = (instructor: Omit<Instructor, "id"> | Instructor) => {
     if ("id" in instructor) {
       // Actualizar un instructor existente
-      dataService.updateInstructor(instructor as Instructor);
+      const updated = dataService.updateInstructor(instructor as Instructor);
+      console.log("Instructor actualizado:", updated);
       toast({
         title: "Instructor actualizado",
         description: "El instructor ha sido actualizado correctamente.",
       });
     } else {
       // Añadir un nuevo instructor
-      dataService.addInstructor(instructor);
+      const added = dataService.addInstructor(instructor);
+      console.log("Instructor añadido:", added);
       toast({
         title: "Instructor creado",
         description: "El nuevo instructor ha sido añadido correctamente.",
       });
     }
+    
+    // Para forzar la actualizacion en otras pestañas
+    window.localStorage.setItem('teklatam_update_trigger', Date.now().toString());
+    
     setIsEditing(false);
     setIsAdding(false);
-    loadInstructors();
+    loadInstructors(); // Recargar datos inmediatamente
   };
 
   const handleCancel = () => {

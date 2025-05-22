@@ -21,6 +21,7 @@ const TestimonialsManager = () => {
   const loadTestimonials = () => {
     const loadedTestimonials = dataService.getTestimonials();
     setTestimonials(loadedTestimonials);
+    console.log("Testimonios cargados:", loadedTestimonials);
   };
 
   const handleAdd = () => {
@@ -55,22 +56,28 @@ const TestimonialsManager = () => {
   const handleSave = (testimonial: Omit<Testimonial, "id"> | Testimonial) => {
     if ("id" in testimonial) {
       // Actualizar un testimonio existente
-      dataService.updateTestimonial(testimonial as Testimonial);
+      const updated = dataService.updateTestimonial(testimonial as Testimonial);
+      console.log("Testimonio actualizado:", updated);
       toast({
         title: "Testimonio actualizado",
         description: "El testimonio ha sido actualizado correctamente.",
       });
     } else {
       // Añadir un nuevo testimonio
-      dataService.addTestimonial(testimonial);
+      const added = dataService.addTestimonial(testimonial);
+      console.log("Testimonio añadido:", added);
       toast({
         title: "Testimonio creado",
         description: "El nuevo testimonio ha sido añadido correctamente.",
       });
     }
+    
+    // Para forzar la actualizacion en otras pestañas
+    window.localStorage.setItem('teklatam_update_trigger', Date.now().toString());
+    
     setIsEditing(false);
     setIsAdding(false);
-    loadTestimonials();
+    loadTestimonials(); // Recargar datos inmediatamente
   };
 
   const handleCancel = () => {

@@ -11,6 +11,7 @@ const TestimonialsSection = () => {
     const loadTestimonials = () => {
       try {
         const loadedTestimonials = dataService.getTestimonials();
+        console.log("Sección de testimonios: Datos cargados", loadedTestimonials);
         setTestimonials(loadedTestimonials);
       } catch (error) {
         console.error("Error al cargar los testimonios:", error);
@@ -24,7 +25,9 @@ const TestimonialsSection = () => {
 
     // Definir un evento personalizado para recargar los datos cuando hay cambios
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'teklatam_testimonials') {
+      console.log("Storage change detected:", e.key);
+      if (e.key === 'teklatam_testimonials' || e.key === 'teklatam_update_trigger') {
+        console.log("Recargando testimonios debido a cambios en localStorage");
         loadTestimonials();
       }
     };
@@ -33,7 +36,7 @@ const TestimonialsSection = () => {
     window.addEventListener('storage', handleStorageChange);
 
     // También podemos verificar periódicamente
-    const interval = setInterval(loadTestimonials, 10000); // Comprobar cada 10 segundos
+    const interval = setInterval(loadTestimonials, 5000); // Comprobar cada 5 segundos
 
     // Limpiar listeners y intervalos cuando el componente se desmonta
     return () => {
