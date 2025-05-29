@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Program, ProgramModule, ProgramFAQ, dataService, Instructor } from "@/services/dataService";
-import { ImageUploader } from "@/components/ui/ImageUploader";
+import ImageUploader from "@/components/ui/ImageUploader";
 import { X, Plus } from "lucide-react";
 
 const programSchema = z.object({
@@ -77,9 +77,9 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
     };
 
     if (program?.id) {
-      onSave({ ...programData, id: program.id });
+      onSave({ ...programData, id: program.id } as Program);
     } else {
-      onSave(programData);
+      onSave(programData as Omit<Program, "id">);
     }
   };
 
@@ -330,9 +330,10 @@ const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
                     <FormLabel>Imagen del Programa</FormLabel>
                     <FormControl>
                       <ImageUploader
+                        id="program-image"
                         value={field.value}
                         onChange={field.onChange}
-                        placeholder="Selecciona una imagen para el programa"
+                        label="Imagen del Programa"
                       />
                     </FormControl>
                     <FormMessage />

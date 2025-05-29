@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Testimonial, dataService, Program } from "@/services/dataService";
-import { ImageUploader } from "@/components/ui/ImageUploader";
+import ImageUploader from "@/components/ui/ImageUploader";
 
 const testimonialSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -62,9 +62,9 @@ const TestimonialForm = ({ testimonial, onSave, onCancel }: TestimonialFormProps
 
   const onSubmit = (data: TestimonialFormData) => {
     if (testimonial?.id) {
-      onSave({ ...data, id: testimonial.id });
+      onSave({ ...data, id: testimonial.id } as Testimonial);
     } else {
-      onSave(data);
+      onSave(data as Omit<Testimonial, "id">);
     }
   };
 
@@ -188,9 +188,10 @@ const TestimonialForm = ({ testimonial, onSave, onCancel }: TestimonialFormProps
                     <FormLabel>Foto</FormLabel>
                     <FormControl>
                       <ImageUploader
+                        id="testimonial-image"
                         value={field.value}
                         onChange={field.onChange}
-                        placeholder="Selecciona una foto para el testimonio"
+                        label="Foto del testimonio"
                       />
                     </FormControl>
                     <FormMessage />
