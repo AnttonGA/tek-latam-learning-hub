@@ -166,7 +166,7 @@ const ContactSection = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="">Ninguno en particular</SelectItem>
+                            <SelectItem value="ninguno">Ninguno en particular</SelectItem>
                             {programs.map((program) => (
                               <SelectItem key={program.id} value={program.title}>
                                 {program.title} - {program.category}
