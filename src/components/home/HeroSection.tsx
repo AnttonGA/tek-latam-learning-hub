@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { dataService } from "@/services/dataService";
 import { HeroSlide, SiteContent } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,6 @@ const HeroSection = () => {
       const siteContent = dataService.getSiteContent();
       setContent(siteContent);
       
-      // If heroSlides doesn't exist or is empty, initialize it
       if (!siteContent.heroSlides || siteContent.heroSlides.length === 0) {
         const updatedContent = {
           ...siteContent,
@@ -62,7 +61,7 @@ const HeroSection = () => {
     }
   }, []);
 
-  // Configurar auto-play y tracking del índice activo
+  // Configurar auto-play optimizado
   useEffect(() => {
     if (!api) return;
 
@@ -70,13 +69,17 @@ const HeroSection = () => {
       setActiveIndex(api.selectedScrollSnap());
     };
 
-    // Auto-play cada 5 segundos
+    // Auto-play más eficiente
     const autoPlay = setInterval(() => {
-      api.scrollNext();
-    }, 5000);
+      if (api.canScrollNext()) {
+        api.scrollNext();
+      } else {
+        api.scrollTo(0);
+      }
+    }, 4000);
 
     api.on("select", onSelect);
-    onSelect(); // Set initial index
+    onSelect();
 
     return () => {
       clearInterval(autoPlay);
@@ -84,25 +87,16 @@ const HeroSection = () => {
     };
   }, [api]);
 
-  // Función mejorada para scrollear a las secciones o navegar a ellas
-  const scrollToSection = (sectionId: string) => {
-    console.log("Intentando navegar a la sección:", sectionId);
-    
-    // Asegurarse de que sectionId no tenga un # al inicio
+  const scrollToSection = useCallback((sectionId: string) => {
     const cleanSectionId = sectionId.replace(/^#+/, '');
-    
-    // Intentar encontrar el elemento por ID
     const element = document.getElementById(cleanSectionId);
     
     if (element) {
-      console.log("Elemento encontrado, haciendo scroll a:", cleanSectionId);
       element.scrollIntoView({ behavior: 'smooth' });
     } else {
-      // Si el elemento no existe, navegamos a la página principal con un hash
-      console.log("Elemento no encontrado, redirigiendo a /#" + cleanSectionId);
       window.location.href = `/#${cleanSectionId}`;
     }
-  };
+  }, []);
 
   if (!content || !content.heroSlides) {
     return (
@@ -120,38 +114,40 @@ const HeroSection = () => {
         opts={{ 
           loop: true,
           dragFree: false,
-          duration: 25, // Transición más rápida (por defecto es 25)
-          slidesToScroll: 1
+          duration: 20,
+          slidesToScroll: 1,
+          skipSnaps: false,
+          startIndex: 0
         }}
       >
         <CarouselContent>
           {content.heroSlides.map((slide: HeroSlide, index) => (
             <CarouselItem key={slide.id}>
               <div className="relative h-[80vh] w-full overflow-hidden">
-                {/* Background Image with Overlay */}
+                {/* Background optimizado */}
                 <div 
-                  className="absolute inset-0 bg-cover bg-center z-0 transition-transform duration-700 ease-out"
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-500 ease-out"
                   style={{ 
                     backgroundImage: `url(${slide.imageUrl})`,
+                    willChange: index === activeIndex ? 'opacity' : 'auto'
                   }}
                 >
-                  {/* Dark Overlay */}
-                  <div className="absolute inset-0 bg-black/50 z-10"></div>
+                  <div className="absolute inset-0 bg-black/50"></div>
                 </div>
                 
-                {/* Content */}
+                {/* Content optimizado */}
                 <div className="relative z-20 h-full flex flex-col items-center justify-center text-center text-white p-6">
-                  <div className="max-w-3xl mx-auto animate-fade-in" style={{animationDelay: '0.2s'}}>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 transition-all duration-500">
+                  <div className="max-w-3xl mx-auto">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 animate-fade-in">
                       {slide.title}
                     </h1>
-                    <p className="text-lg md:text-xl opacity-90 mb-8 max-w-2xl mx-auto transition-all duration-500 delay-100">
+                    <p className="text-lg md:text-xl opacity-90 mb-8 max-w-2xl mx-auto animate-fade-in">
                       {slide.subtitle}
                     </p>
                     {slide.buttonText && (
                       <Button 
                         size="lg" 
-                        className="bg-teklatam-orange hover:bg-teklatam-orange/90 text-white gap-2 transition-all duration-300 hover:scale-105"
+                        className="bg-teklatam-orange hover:bg-teklatam-orange/90 text-white gap-2 transform transition-all duration-200 hover:scale-105"
                         onClick={() => scrollToSection(slide.buttonLink || 'programas')}
                       >
                         {slide.buttonText}
@@ -161,14 +157,14 @@ const HeroSection = () => {
                   </div>
                 </div>
                 
-                {/* Slide Indicator */}
+                {/* Indicadores optimizados */}
                 <div className="absolute bottom-6 left-0 right-0 z-30">
                   <div className="flex justify-center gap-2">
                     {content.heroSlides.map((_, i) => (
                       <button
                         key={i}
                         onClick={() => api?.scrollTo(i)}
-                        className={`h-2 rounded-full transition-all duration-300 hover:scale-110 ${
+                        className={`h-2 rounded-full transition-all duration-200 ${
                           i === activeIndex ? 'w-8 bg-teklatam-orange' : 'w-2 bg-white/50 hover:bg-white/70'
                         }`}
                       />
@@ -179,8 +175,8 @@ const HeroSection = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-4 text-white border-white hover:bg-white/20 hover:text-white transition-all duration-200" />
-        <CarouselNext className="right-4 text-white border-white hover:bg-white/20 hover:text-white transition-all duration-200" />
+        <CarouselPrevious className="left-4 text-white border-white hover:bg-white/20 hover:text-white transition-colors duration-200" />
+        <CarouselNext className="right-4 text-white border-white hover:bg-white/20 hover:text-white transition-colors duration-200" />
       </Carousel>
     </section>
   );

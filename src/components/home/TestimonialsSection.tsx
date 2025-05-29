@@ -7,11 +7,9 @@ const TestimonialsSection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Función para cargar los testimonios
     const loadTestimonials = () => {
       try {
         const loadedTestimonials = dataService.getTestimonials();
-        console.log("Sección de testimonios: Datos cargados", loadedTestimonials);
         setTestimonials(loadedTestimonials);
       } catch (error) {
         console.error("Error al cargar los testimonios:", error);
@@ -20,28 +18,19 @@ const TestimonialsSection = () => {
       }
     };
 
-    // Cargar testimonios cuando se monta el componente
     loadTestimonials();
 
-    // Definir un evento personalizado para recargar los datos cuando hay cambios
+    // Solo escuchar cambios en storage, sin polling
     const handleStorageChange = (e: StorageEvent) => {
-      console.log("Storage change detected:", e.key);
       if (e.key === 'teklatam_testimonials' || e.key === 'teklatam_update_trigger') {
-        console.log("Recargando testimonios debido a cambios en localStorage");
         loadTestimonials();
       }
     };
 
-    // Escuchar cambios en el localStorage
     window.addEventListener('storage', handleStorageChange);
 
-    // También podemos verificar periódicamente
-    const interval = setInterval(loadTestimonials, 10000); // Comprobar cada 10 segundos
-
-    // Limpiar listeners y intervalos cuando el componente se desmonta
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
     };
   }, []);
 
@@ -49,7 +38,28 @@ const TestimonialsSection = () => {
     return (
       <section id="testimonios" className="py-16 bg-white">
         <div className="teklatam-container">
-          <p className="text-center text-lg">Cargando testimonios...</p>
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-300 rounded w-1/3 mx-auto mb-4"></div>
+            <div className="h-4 bg-gray-300 rounded w-2/3 mx-auto mb-12"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-gray-100 p-8 rounded-lg">
+                  <div className="flex items-center mb-6">
+                    <div className="w-16 h-16 bg-gray-300 rounded-full mr-4"></div>
+                    <div>
+                      <div className="h-4 bg-gray-300 rounded w-24 mb-2"></div>
+                      <div className="h-3 bg-gray-300 rounded w-32"></div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-3 bg-gray-300 rounded"></div>
+                    <div className="h-3 bg-gray-300 rounded w-5/6"></div>
+                    <div className="h-3 bg-gray-300 rounded w-4/5"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     );
@@ -70,12 +80,13 @@ const TestimonialsSection = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="bg-teklatam-gray-50 p-8 rounded-lg">
+              <div key={testimonial.id} className="bg-teklatam-gray-50 p-8 rounded-lg transition-transform duration-200 hover:scale-105">
                 <div className="flex items-center mb-6">
                   <img 
                     src={testimonial.image} 
                     alt={testimonial.name} 
                     className="w-16 h-16 rounded-full mr-4 object-cover" 
+                    loading="lazy"
                   />
                   <div>
                     <h3 className="font-bold">{testimonial.name}</h3>
