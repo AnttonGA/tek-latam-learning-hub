@@ -20,10 +20,10 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: mode === 'production' ? '/' : '/',
+  base: '/',
   build: {
     outDir: 'dist',
     sourcemap: false,
-    minify: 'terser',
+    minify: mode === 'production' ? 'esbuild' : false,
   },
 }));
