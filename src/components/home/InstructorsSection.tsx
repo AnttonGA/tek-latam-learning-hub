@@ -11,6 +11,7 @@ const InstructorsSection = () => {
       try {
         const loadedInstructors = dataService.getInstructors();
         setInstructors(loadedInstructors);
+        console.log("Instructores cargados en home:", loadedInstructors);
       } catch (error) {
         console.error("Error al cargar los instructores:", error);
       } finally {
@@ -23,6 +24,7 @@ const InstructorsSection = () => {
     // Solo escuchar cambios en storage, sin polling
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'teklatam_instructors' || e.key === 'teklatam_update_trigger') {
+        console.log("Detectado cambio en instructores desde storage");
         loadInstructors();
       }
     };

@@ -1,7 +1,6 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Program, dataService } from '@/services/dataService';
+import { Program, Instructor, dataService } from '@/services/dataService';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 const ProgramDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [program, setProgram] = useState<Program | null>(null);
+  const [instructor, setInstructor] = useState<Instructor | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('descripcion');
   const { toast } = useToast();
@@ -28,6 +28,11 @@ const ProgramDetail = () => {
         
         if (foundProgram) {
           setProgram(foundProgram);
+          
+          // Buscar información completa del instructor
+          const instructors = dataService.getInstructors();
+          const foundInstructor = instructors.find(inst => inst.name === foundProgram.instructor);
+          setInstructor(foundInstructor || null);
         }
         
         setLoading(false);
@@ -132,6 +137,9 @@ const ProgramDetail = () => {
               <div className="flex items-center mb-8">
                 <GraduationCap className="h-6 w-6 mr-2" />
                 <span className="text-lg">Instructor: {program.instructor}</span>
+                {instructor && (
+                  <span className="ml-2 text-sm opacity-90">- {instructor.role}</span>
+                )}
               </div>
               
               <div className="flex flex-wrap gap-4">
@@ -353,7 +361,7 @@ const ProgramDetail = () => {
                   <div className="md:w-1/4">
                     <div className="rounded-lg overflow-hidden">
                       <img 
-                        src="https://i.pravatar.cc/300" 
+                        src={instructor?.image || "https://i.pravatar.cc/300"} 
                         alt={program.instructor}
                         className="w-full object-cover aspect-square"
                       />
@@ -362,13 +370,12 @@ const ProgramDetail = () => {
                   
                   <div className="md:w-3/4">
                     <h3 className="text-2xl font-bold mb-2">{program.instructor}</h3>
-                    <p className="text-teklatam-gray-600 mb-4">Especialista en {program.title}</p>
+                    <p className="text-teklatam-gray-600 mb-4">{instructor?.role || `Especialista en ${program.title}`}</p>
                     
                     <p className="mb-4">
-                      Profesional con amplia experiencia en la industria y en docencia. Ha trabajado
-                      en importantes empresas del sector y cuenta con reconocimientos por su labor
-                      educativa y profesional. Su enfoque práctico y cercano hace que los conceptos
-                      más complejos sean fáciles de entender y aplicar.
+                      {instructor?.bio || 
+                        "Profesional con amplia experiencia en la industria y en docencia. Ha trabajado en importantes empresas del sector y cuenta con reconocimientos por su labor educativa y profesional. Su enfoque práctico y cercano hace que los conceptos más complejos sean fáciles de entender y aplicar."
+                      }
                     </p>
                     
                     <div className="mb-6">
