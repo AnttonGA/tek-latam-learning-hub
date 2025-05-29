@@ -1,22 +1,34 @@
-
-import { useState } from "react";
-import { Program, ProgramModule, ProgramFAQ } from "@/services/dataService";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ArrowLeft, Save, Plus, Trash2 } from "lucide-react";
-import ImageUploader from "@/components/ui/ImageUploader";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Program, ProgramModule, ProgramFAQ, dataService, Instructor } from "@/services/dataService";
+import { ImageUploader } from "@/components/ui/ImageUploader";
+import { X, Plus } from "lucide-react";
+
+const programSchema = z.object({
+  title: z.string().min(1, "El título es requerido"),
+  instructor: z.string().min(1, "El instructor es requerido"),
+  level: z.string().min(1, "El nivel es requerido"),
+  students: z.number().min(0, "El número de estudiantes debe ser positivo"),
+  description: z.string().min(1, "La descripción es requerida"),
+  image: z.string().min(1, "La imagen es requerida"),
+  category: z.enum(["curso", "diplomado", "maestria"]),
+  duration: z.string().optional(),
+  schedule: z.string().optional(),
+  startDate: z.string().optional(),
+  detailedDescription: z.string().optional(),
+  targetAudience: z.string().optional(),
+});
+
+type ProgramFormData = z.infer<typeof programSchema>;
 
 interface ProgramFormProps {
   program?: Program;
@@ -25,554 +37,480 @@ interface ProgramFormProps {
 }
 
 const ProgramForm = ({ program, onSave, onCancel }: ProgramFormProps) => {
-  const [formData, setFormData] = useState<Omit<Program, "id"> | Program>({
-    id: program?.id || "",
-    title: program?.title || "",
-    instructor: program?.instructor || "",
-    level: program?.level || "Principiante",
-    students: program?.students || 0,
-    description: program?.description || "",
-    image: program?.image || "",
-    category: program?.category || "curso",
-    // Campos adicionales para la página de detalle
-    duration: program?.duration || "",
-    schedule: program?.schedule || "",
-    startDate: program?.startDate || "",
-    detailedDescription: program?.detailedDescription || "",
-    targetAudience: program?.targetAudience || "",
-    learningObjectives: program?.learningObjectives || [""],
-    requirements: program?.requirements || [""],
-    modules: program?.modules || [{ title: "", content: "" }],
-    faqs: program?.faqs || [{ question: "", answer: "" }],
+  const [instructors, setInstructors] = useState<Instructor[]>([]);
+  const [learningObjectives, setLearningObjectives] = useState<string[]>(program?.learningObjectives || [""]);
+  const [requirements, setRequirements] = useState<string[]>(program?.requirements || [""]);
+  const [modules, setModules] = useState<ProgramModule[]>(program?.modules || [{ title: "", content: "" }]);
+  const [faqs, setFaqs] = useState<ProgramFAQ[]>(program?.faqs || [{ question: "", answer: "" }]);
+
+  // Cargar instructores disponibles
+  useEffect(() => {
+    const loadedInstructors = dataService.getInstructors();
+    setInstructors(loadedInstructors);
+  }, []);
+
+  const form = useForm<ProgramFormData>({
+    resolver: zodResolver(programSchema),
+    defaultValues: {
+      title: program?.title || "",
+      instructor: program?.instructor || "",
+      level: program?.level || "",
+      students: program?.students || 0,
+      description: program?.description || "",
+      image: program?.image || "",
+      category: program?.category || "curso",
+      duration: program?.duration || "",
+      schedule: program?.schedule || "",
+      startDate: program?.startDate || "",
+      detailedDescription: program?.detailedDescription || "",
+      targetAudience: program?.targetAudience || "",
+    },
   });
 
-  const [activeTab, setActiveTab] = useState("basic");
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: name === "students" ? Number(value) || 0 : value,
-    });
-  };
-
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleImageChange = (value: string) => {
-    setFormData({
-      ...formData,
-      image: value,
-    });
-  };
-
-  // Manejadores para arrays
-  const handleArrayItemChange = (
-    arrayName: 'learningObjectives' | 'requirements',
-    index: number,
-    value: string
-  ) => {
-    const updatedArray = [...(formData[arrayName] || [])];
-    updatedArray[index] = value;
-    setFormData({
-      ...formData,
-      [arrayName]: updatedArray,
-    });
-  };
-
-  const addArrayItem = (arrayName: 'learningObjectives' | 'requirements') => {
-    const updatedArray = [...(formData[arrayName] || []), ""];
-    setFormData({
-      ...formData,
-      [arrayName]: updatedArray,
-    });
-  };
-
-  const removeArrayItem = (
-    arrayName: 'learningObjectives' | 'requirements',
-    index: number
-  ) => {
-    const updatedArray = [...(formData[arrayName] || [])];
-    updatedArray.splice(index, 1);
-    setFormData({
-      ...formData,
-      [arrayName]: updatedArray,
-    });
-  };
-
-  // Manejadores para módulos
-  const handleModuleChange = (
-    index: number,
-    field: keyof ProgramModule,
-    value: string
-  ) => {
-    const updatedModules = [...(formData.modules || [])];
-    updatedModules[index] = {
-      ...updatedModules[index],
-      [field]: value,
+  const onSubmit = (data: ProgramFormData) => {
+    const programData = {
+      ...data,
+      learningObjectives: learningObjectives.filter(obj => obj.trim() !== ""),
+      requirements: requirements.filter(req => req.trim() !== ""),
+      modules: modules.filter(mod => mod.title.trim() !== "" || mod.content.trim() !== ""),
+      faqs: faqs.filter(faq => faq.question.trim() !== "" || faq.answer.trim() !== ""),
     };
-    setFormData({
-      ...formData,
-      modules: updatedModules,
-    });
+
+    if (program?.id) {
+      onSave({ ...programData, id: program.id });
+    } else {
+      onSave(programData);
+    }
   };
 
-  const addModule = () => {
-    const updatedModules = [...(formData.modules || []), { title: "", content: "" }];
-    setFormData({
-      ...formData,
-      modules: updatedModules,
-    });
+  const addLearningObjective = () => setLearningObjectives([...learningObjectives, ""]);
+  const removeLearningObjective = (index: number) => setLearningObjectives(learningObjectives.filter((_, i) => i !== index));
+  const updateLearningObjective = (index: number, value: string) => {
+    const updated = [...learningObjectives];
+    updated[index] = value;
+    setLearningObjectives(updated);
   };
 
-  const removeModule = (index: number) => {
-    const updatedModules = [...(formData.modules || [])];
-    updatedModules.splice(index, 1);
-    setFormData({
-      ...formData,
-      modules: updatedModules,
-    });
+  const addRequirement = () => setRequirements([...requirements, ""]);
+  const removeRequirement = (index: number) => setRequirements(requirements.filter((_, i) => i !== index));
+  const updateRequirement = (index: number, value: string) => {
+    const updated = [...requirements];
+    updated[index] = value;
+    setRequirements(updated);
   };
 
-  // Manejadores para FAQs
-  const handleFAQChange = (
-    index: number,
-    field: keyof ProgramFAQ,
-    value: string
-  ) => {
-    const updatedFaqs = [...(formData.faqs || [])];
-    updatedFaqs[index] = {
-      ...updatedFaqs[index],
-      [field]: value,
-    };
-    setFormData({
-      ...formData,
-      faqs: updatedFaqs,
-    });
+  const addModule = () => setModules([...modules, { title: "", content: "" }]);
+  const removeModule = (index: number) => setModules(modules.filter((_, i) => i !== index));
+  const updateModule = (index: number, field: keyof ProgramModule, value: string) => {
+    const updated = [...modules];
+    updated[index] = { ...updated[index], [field]: value };
+    setModules(updated);
   };
 
-  const addFAQ = () => {
-    const updatedFaqs = [...(formData.faqs || []), { question: "", answer: "" }];
-    setFormData({
-      ...formData,
-      faqs: updatedFaqs,
-    });
-  };
-
-  const removeFAQ = (index: number) => {
-    const updatedFaqs = [...(formData.faqs || [])];
-    updatedFaqs.splice(index, 1);
-    setFormData({
-      ...formData,
-      faqs: updatedFaqs,
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Ensure students is a number
-    const formattedData = {
-      ...formData,
-      students: Number(formData.students) || 0,
-      // Filter out empty items from arrays
-      learningObjectives: formData.learningObjectives?.filter(item => item.trim() !== "") || [],
-      requirements: formData.requirements?.filter(item => item.trim() !== "") || [],
-      modules: formData.modules?.filter(module => module.title.trim() !== "" || module.content.trim() !== "") || [],
-      faqs: formData.faqs?.filter(faq => faq.question.trim() !== "" || faq.answer.trim() !== "") || [],
-    };
-    onSave(formattedData);
+  const addFAQ = () => setFaqs([...faqs, { question: "", answer: "" }]);
+  const removeFAQ = (index: number) => setFaqs(faqs.filter((_, i) => i !== index));
+  const updateFAQ = (index: number, field: keyof ProgramFAQ, value: string) => {
+    const updated = [...faqs];
+    updated[index] = { ...updated[index], [field]: value };
+    setFaqs(updated);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>
-            {program ? "Editar Programa" : "Nuevo Programa"}
-          </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onCancel}
-            type="button"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver
-          </Button>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Tabs defaultValue="basic" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="w-full grid grid-cols-2 md:grid-cols-5 mb-4">
-              <TabsTrigger value="basic">Información Básica</TabsTrigger>
-              <TabsTrigger value="details">Detalles</TabsTrigger>
-              <TabsTrigger value="objectives">Objetivos</TabsTrigger>
-              <TabsTrigger value="modules">Módulos</TabsTrigger>
-              <TabsTrigger value="faqs">FAQs</TabsTrigger>
-            </TabsList>
-            
-            {/* Pestaña de Información Básica */}
-            <TabsContent value="basic" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="title">Título</Label>
-                  <Input
-                    id="title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="instructor">Instructor</Label>
-                  <Input
-                    id="instructor"
-                    name="instructor"
-                    value={formData.instructor}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="level">Nivel</Label>
-                  <Select
-                    value={formData.level}
-                    onValueChange={(value) => handleSelectChange("level", value)}
-                  >
-                    <SelectTrigger id="level">
-                      <SelectValue placeholder="Selecciona el nivel" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Principiante">Principiante</SelectItem>
-                      <SelectItem value="Intermedio">Intermedio</SelectItem>
-                      <SelectItem value="Avanzado">Avanzado</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="students">Estudiantes</Label>
-                  <Input
-                    id="students"
-                    name="students"
-                    type="number"
-                    min="0"
-                    value={formData.students.toString()}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="category">Categoría</Label>
-                  <Select
-                    value={formData.category}
-                    onValueChange={(value) => handleSelectChange("category", value as 'curso' | 'diplomado' | 'maestria')}
-                  >
-                    <SelectTrigger id="category">
-                      <SelectValue placeholder="Selecciona la categoría" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="curso">Curso</SelectItem>
-                      <SelectItem value="diplomado">Diplomado</SelectItem>
-                      <SelectItem value="maestria">Maestría</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <ImageUploader
-                    id="program-image"
-                    value={formData.image}
-                    onChange={handleImageChange}
-                    label="Imagen del programa"
-                    previewClassName="h-48 w-auto"
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="description">Descripción Corta</Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    rows={3}
-                    required
-                  />
-                </div>
-              </div>
-            </TabsContent>
-            
-            {/* Pestaña de Detalles */}
-            <TabsContent value="details" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="duration">Duración</Label>
-                  <Input
-                    id="duration"
-                    name="duration"
-                    value={formData.duration || ""}
-                    onChange={handleChange}
-                    placeholder="Ej: 6 meses"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="schedule">Horario</Label>
-                  <Input
-                    id="schedule"
-                    name="schedule"
-                    value={formData.schedule || ""}
-                    onChange={handleChange}
-                    placeholder="Ej: Flexible, 8-10 horas por semana"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="startDate">Fecha de Inicio</Label>
-                  <Input
-                    id="startDate"
-                    name="startDate"
-                    value={formData.startDate || ""}
-                    onChange={handleChange}
-                    placeholder="Ej: Próximo inicio: 15 de junio, 2025"
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-3">
-                  <Label htmlFor="detailedDescription">Descripción Detallada</Label>
-                  <Textarea
-                    id="detailedDescription"
-                    name="detailedDescription"
-                    value={formData.detailedDescription || ""}
-                    onChange={handleChange}
-                    rows={4}
-                    placeholder="Descripción detallada del programa"
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-3">
-                  <Label htmlFor="targetAudience">Público Objetivo</Label>
-                  <Textarea
-                    id="targetAudience"
-                    name="targetAudience"
-                    value={formData.targetAudience || ""}
-                    onChange={handleChange}
-                    rows={3}
-                    placeholder="A quién va dirigido este programa"
-                  />
-                </div>
-              </div>
-            </TabsContent>
-            
-            {/* Pestaña de Objetivos y Requisitos */}
-            <TabsContent value="objectives" className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <Label>Objetivos de Aprendizaje</Label>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => addArrayItem('learningObjectives')}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Añadir Objetivo
-                    </Button>
-                  </div>
-                  
-                  {formData.learningObjectives?.map((objective, index) => (
-                    <div key={`objective-${index}`} className="flex items-center gap-2 mb-2">
-                      <Input
-                        value={objective}
-                        onChange={(e) => handleArrayItemChange('learningObjectives', index, e.target.value)}
-                        placeholder="Objetivo de aprendizaje"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeArrayItem('learningObjectives', index)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                
-                <Separator className="my-4" />
-                
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <Label>Requisitos</Label>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => addArrayItem('requirements')}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Añadir Requisito
-                    </Button>
-                  </div>
-                  
-                  {formData.requirements?.map((requirement, index) => (
-                    <div key={`requirement-${index}`} className="flex items-center gap-2 mb-2">
-                      <Input
-                        value={requirement}
-                        onChange={(e) => handleArrayItemChange('requirements', index, e.target.value)}
-                        placeholder="Requisito"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeArrayItem('requirements', index)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </TabsContent>
-            
-            {/* Pestaña de Módulos */}
-            <TabsContent value="modules" className="space-y-4">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center mb-2">
-                  <Label>Módulos del Programa</Label>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={addModule}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Añadir Módulo
-                  </Button>
-                </div>
-                
-                {formData.modules?.map((module, index) => (
-                  <div key={`module-${index}`} className="p-4 border rounded-lg space-y-3 mb-3">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-medium">Módulo {index + 1}</h4>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeModule(index)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label>Título del Módulo</Label>
-                      <Input
-                        value={module.title}
-                        onChange={(e) => handleModuleChange(index, 'title', e.target.value)}
-                        placeholder="Ej: Módulo 1: Fundamentos"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label>Contenido</Label>
-                      <Textarea
-                        value={module.content}
-                        onChange={(e) => handleModuleChange(index, 'content', e.target.value)}
-                        rows={3}
-                        placeholder="Descripción del contenido de este módulo"
-                      />
-                    </div>
-                  </div>
-                ))}
-                
-                {formData.modules?.length === 0 && (
-                  <p className="text-center text-gray-500 py-4">
-                    No hay módulos definidos. Añade uno para empezar.
-                  </p>
-                )}
-              </div>
-            </TabsContent>
-            
-            {/* Pestaña de FAQs */}
-            <TabsContent value="faqs" className="space-y-4">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center mb-2">
-                  <Label>Preguntas Frecuentes</Label>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={addFAQ}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Añadir FAQ
-                  </Button>
-                </div>
-                
-                {formData.faqs?.map((faq, index) => (
-                  <div key={`faq-${index}`} className="p-4 border rounded-lg space-y-3 mb-3">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-medium">Pregunta {index + 1}</h4>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeFAQ(index)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label>Pregunta</Label>
-                      <Input
-                        value={faq.question}
-                        onChange={(e) => handleFAQChange(index, 'question', e.target.value)}
-                        placeholder="Ej: ¿Necesito conocimientos previos?"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label>Respuesta</Label>
-                      <Textarea
-                        value={faq.answer}
-                        onChange={(e) => handleFAQChange(index, 'answer', e.target.value)}
-                        rows={3}
-                        placeholder="Respuesta a la pregunta"
-                      />
-                    </div>
-                  </div>
-                ))}
-                
-                {formData.faqs?.length === 0 && (
-                  <p className="text-center text-gray-500 py-4">
-                    No hay preguntas frecuentes definidas. Añade una para empezar.
-                  </p>
-                )}
-              </div>
-            </TabsContent>
-          </Tabs>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">
+          {program ? "Editar Programa" : "Nuevo Programa"}
+        </h2>
+        <Button variant="outline" onClick={onCancel}>
+          Cancelar
+        </Button>
+      </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <Button variant="outline" type="button" onClick={onCancel}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Información Básica</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Título del Programa</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="instructor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Instructor</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona un instructor" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {instructors.map((instructor) => (
+                            <SelectItem key={instructor.id} value={instructor.name}>
+                              {instructor.name} - {instructor.role}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="level"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nivel</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona el nivel" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Principiante">Principiante</SelectItem>
+                          <SelectItem value="Intermedio">Intermedio</SelectItem>
+                          <SelectItem value="Avanzado">Avanzado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Categoría</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona la categoría" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="curso">Curso</SelectItem>
+                          <SelectItem value="diplomado">Diplomado</SelectItem>
+                          <SelectItem value="maestria">Maestría</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="students"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Número de Estudiantes</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          {...field} 
+                          onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="duration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Duración</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="ej: 6 meses" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="schedule"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Horario</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="ej: Flexible, 8-10 horas por semana" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fecha de Inicio</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="ej: Próximo inicio: 15 de junio, 2025" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción Corta</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} rows={3} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="detailedDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción Detallada</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} rows={4} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="targetAudience"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Audiencia Objetivo</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} rows={3} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Imagen del Programa</FormLabel>
+                    <FormControl>
+                      <ImageUploader
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Selecciona una imagen para el programa"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Objetivos de Aprendizaje</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {learningObjectives.map((objective, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <Input
+                    value={objective}
+                    onChange={(e) => updateLearningObjective(index, e.target.value)}
+                    placeholder="Objetivo de aprendizaje"
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => removeLearningObjective(index)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={addLearningObjective}
+                className="mt-2"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Agregar Objetivo
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Requisitos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {requirements.map((requirement, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <Input
+                    value={requirement}
+                    onChange={(e) => updateRequirement(index, e.target.value)}
+                    placeholder="Requisito"
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => removeRequirement(index)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={addRequirement}
+                className="mt-2"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Agregar Requisito
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Módulos del Programa</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {modules.map((module, index) => (
+                <div key={index} className="border p-4 rounded mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-medium">Módulo {index + 1}</h4>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => removeModule(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <Input
+                      value={module.title}
+                      onChange={(e) => updateModule(index, "title", e.target.value)}
+                      placeholder="Título del módulo"
+                    />
+                    <Textarea
+                      value={module.content}
+                      onChange={(e) => updateModule(index, "content", e.target.value)}
+                      placeholder="Contenido del módulo"
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              ))}
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={addModule}
+                className="mt-2"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Agregar Módulo
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Preguntas Frecuentes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {faqs.map((faq, index) => (
+                <div key={index} className="border p-4 rounded mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-medium">FAQ {index + 1}</h4>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => removeFAQ(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <Input
+                      value={faq.question}
+                      onChange={(e) => updateFAQ(index, "question", e.target.value)}
+                      placeholder="Pregunta"
+                    />
+                    <Textarea
+                      value={faq.answer}
+                      onChange={(e) => updateFAQ(index, "answer", e.target.value)}
+                      placeholder="Respuesta"
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              ))}
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={addFAQ}
+                className="mt-2"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Agregar FAQ
+              </Button>
+            </CardContent>
+          </Card>
+
+          <div className="flex justify-end space-x-4">
+            <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar
             </Button>
-            <Button type="submit">
-              <Save className="h-4 w-4 mr-2" />
-              Guardar
+            <Button type="submit" className="bg-teklatam-orange hover:bg-teklatam-orange/90">
+              {program ? "Actualizar" : "Crear"} Programa
             </Button>
           </div>
-        </CardContent>
-      </Card>
-    </form>
+        </form>
+      </Form>
+    </div>
   );
 };
 

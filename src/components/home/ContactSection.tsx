@@ -1,15 +1,16 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Check, Loader } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { dataService } from '@/services/dataService';
+import { dataService, Program } from '@/services/dataService';
 
 // Define schema for form validation
 const contactFormSchema = z.object({
@@ -26,7 +27,14 @@ const ContactSection = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [programs, setPrograms] = useState<Program[]>([]);
   
+  // Cargar programas disponibles
+  useEffect(() => {
+    const loadedPrograms = dataService.getPrograms();
+    setPrograms(loadedPrograms);
+  }, []);
+
   // Initialize react-hook-form with zod validation
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -151,19 +159,21 @@ const ContactSection = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Programa de interés</FormLabel>
-                        <FormControl>
-                          <select 
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            {...field}
-                          >
-                            <option value="">Selecciona un programa</option>
-                            <option value="fullstack">Desarrollo Full Stack</option>
-                            <option value="datascience">Ciencia de Datos</option>
-                            <option value="webdev">Desarrollo Web</option>
-                            <option value="cybersecurity">Ciberseguridad</option>
-                            <option value="other">Otro</option>
-                          </select>
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecciona un programa" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="">Ninguno en particular</SelectItem>
+                            {programs.map((program) => (
+                              <SelectItem key={program.id} value={program.title}>
+                                {program.title} - {program.category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
