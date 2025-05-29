@@ -11,10 +11,12 @@ import {
   CarouselNext, 
   CarouselPrevious 
 } from "@/components/ui/carousel";
+import { type CarouselApi } from "@/components/ui/carousel";
 
 const HeroSection = () => {
   const [content, setContent] = useState<SiteContent | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [api, setApi] = useState<CarouselApi>();
 
   useEffect(() => {
     try {
@@ -60,6 +62,28 @@ const HeroSection = () => {
     }
   }, []);
 
+  // Configurar auto-play y tracking del índice activo
+  useEffect(() => {
+    if (!api) return;
+
+    const onSelect = () => {
+      setActiveIndex(api.selectedScrollSnap());
+    };
+
+    // Auto-play cada 5 segundos
+    const autoPlay = setInterval(() => {
+      api.scrollNext();
+    }, 5000);
+
+    api.on("select", onSelect);
+    onSelect(); // Set initial index
+
+    return () => {
+      clearInterval(autoPlay);
+      api.off("select", onSelect);
+    };
+  }, [api]);
+
   // Función mejorada para scrollear a las secciones o navegar a ellas
   const scrollToSection = (sectionId: string) => {
     console.log("Intentando navegar a la sección:", sectionId);
@@ -92,15 +116,12 @@ const HeroSection = () => {
     <section className="relative" id="hero">
       <Carousel 
         className="w-full" 
+        setApi={setApi}
         opts={{ 
           loop: true,
-          dragFree: false
-        }}
-        onSelect={(api: any) => {
-          // Corregido para manejar correctamente la API de Embla Carousel
-          if (api && api.selectedScrollSnap) {
-            setActiveIndex(api.selectedScrollSnap());
-          }
+          dragFree: false,
+          duration: 25, // Transición más rápida (por defecto es 25)
+          slidesToScroll: 1
         }}
       >
         <CarouselContent>
@@ -109,7 +130,7 @@ const HeroSection = () => {
               <div className="relative h-[80vh] w-full overflow-hidden">
                 {/* Background Image with Overlay */}
                 <div 
-                  className="absolute inset-0 bg-cover bg-center z-0"
+                  className="absolute inset-0 bg-cover bg-center z-0 transition-transform duration-700 ease-out"
                   style={{ 
                     backgroundImage: `url(${slide.imageUrl})`,
                   }}
@@ -121,16 +142,16 @@ const HeroSection = () => {
                 {/* Content */}
                 <div className="relative z-20 h-full flex flex-col items-center justify-center text-center text-white p-6">
                   <div className="max-w-3xl mx-auto animate-fade-in" style={{animationDelay: '0.2s'}}>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 transition-all duration-500">
                       {slide.title}
                     </h1>
-                    <p className="text-lg md:text-xl opacity-90 mb-8 max-w-2xl mx-auto">
+                    <p className="text-lg md:text-xl opacity-90 mb-8 max-w-2xl mx-auto transition-all duration-500 delay-100">
                       {slide.subtitle}
                     </p>
                     {slide.buttonText && (
                       <Button 
                         size="lg" 
-                        className="bg-teklatam-orange hover:bg-teklatam-orange/90 text-white gap-2"
+                        className="bg-teklatam-orange hover:bg-teklatam-orange/90 text-white gap-2 transition-all duration-300 hover:scale-105"
                         onClick={() => scrollToSection(slide.buttonLink || 'programas')}
                       >
                         {slide.buttonText}
@@ -144,10 +165,11 @@ const HeroSection = () => {
                 <div className="absolute bottom-6 left-0 right-0 z-30">
                   <div className="flex justify-center gap-2">
                     {content.heroSlides.map((_, i) => (
-                      <div 
-                        key={i} 
-                        className={`h-2 rounded-full transition-all duration-300 ${
-                          i === activeIndex ? 'w-8 bg-teklatam-orange' : 'w-2 bg-white/50'
+                      <button
+                        key={i}
+                        onClick={() => api?.scrollTo(i)}
+                        className={`h-2 rounded-full transition-all duration-300 hover:scale-110 ${
+                          i === activeIndex ? 'w-8 bg-teklatam-orange' : 'w-2 bg-white/50 hover:bg-white/70'
                         }`}
                       />
                     ))}
@@ -157,8 +179,8 @@ const HeroSection = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-4 text-white border-white hover:bg-white/20 hover:text-white" />
-        <CarouselNext className="right-4 text-white border-white hover:bg-white/20 hover:text-white" />
+        <CarouselPrevious className="left-4 text-white border-white hover:bg-white/20 hover:text-white transition-all duration-200" />
+        <CarouselNext className="right-4 text-white border-white hover:bg-white/20 hover:text-white transition-all duration-200" />
       </Carousel>
     </section>
   );
