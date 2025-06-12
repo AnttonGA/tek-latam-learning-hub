@@ -146,12 +146,11 @@ const NewsForm: React.FC<NewsFormProps> = ({ newsItem, onSubmit, onCancel }) => 
           </div>
 
           <div className="space-y-2">
-            <Label>Imagen</Label>
             <ImageUploader
               id="news-image"
-              label="Seleccionar imagen"
-              onImageSelected={(imageUrl) => setFormData({...formData, image: imageUrl})}
-              currentImage={formData.image}
+              label="Imagen de la noticia"
+              value={formData.image}
+              onChange={(imageUrl) => setFormData({...formData, image: imageUrl})}
             />
           </div>
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { dataService, NewsItem } from '@/services/dataService';
+import { dataService } from '@/services/dataService';
+import { NewsItem } from '@/types';
 import NewsForm from './NewsForm';
 import { Plus, Search, Edit, Trash2, Eye, Calendar, User } from 'lucide-react';
 import {
