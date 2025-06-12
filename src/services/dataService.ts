@@ -1,5 +1,5 @@
 // Tipos de datos para nuestra aplicación
-import { ContactMessage, SiteContent } from '@/types';
+import { ContactMessage, SiteContent, NewsItem } from '@/types';
 
 export interface Program {
   id: string;
@@ -485,6 +485,49 @@ const defaultSiteContent: SiteContent = {
   ctaDescription: 'Únete a nuestra comunidad de estudiantes y profesionales que están cambiando el panorama tecnológico en Latinoamérica.'
 };
 
+// Datos por defecto para noticias
+const defaultNews: NewsItem[] = [
+  {
+    id: "1",
+    title: "Nueva Maestría en Inteligencia Artificial disponible",
+    excerpt: "Lanzamos nuestro programa más avanzado en IA con enfoque en aplicaciones empresariales y machine learning.",
+    content: "Estamos emocionados de anunciar el lanzamiento de nuestra nueva Maestría en Inteligencia Artificial, un programa de 24 meses diseñado para profesionales que buscan liderar la transformación digital en sus organizaciones...",
+    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485",
+    author: "Equipo TekLatam",
+    publishedAt: new Date().toISOString(),
+    category: "anuncios",
+    featured: true,
+    status: "published",
+    tags: ["inteligencia artificial", "maestría", "nuevo programa"]
+  },
+  {
+    id: "2", 
+    title: "Webinar gratuito: Tendencias en Ciberseguridad 2025",
+    excerpt: "Únete a nuestro webinar gratuito donde expertos analizan las principales amenazas y tecnologías de seguridad.",
+    content: "El próximo 25 de junio realizaremos un webinar gratuito sobre las tendencias más importantes en ciberseguridad para 2025. Nuestros expertos compartirán insights sobre las nuevas amenazas y las tecnologías emergentes...",
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
+    author: "Gabriela Rojas",
+    publishedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    category: "eventos",
+    featured: false,
+    status: "published",
+    tags: ["webinar", "ciberseguridad", "gratuito"]
+  },
+  {
+    id: "3",
+    title: "Actualización de plataforma: Nuevas funcionalidades",
+    excerpt: "Hemos mejorado nuestra plataforma de aprendizaje con nuevas herramientas interactivas y mejor experiencia de usuario.",
+    content: "Como parte de nuestro compromiso con la excelencia educativa, hemos implementado importantes mejoras en nuestra plataforma de aprendizaje...",
+    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+    author: "Equipo Técnico",
+    publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    category: "actualizaciones",
+    featured: false,
+    status: "published",
+    tags: ["plataforma", "mejoras", "funcionalidades"]
+  }
+];
+
 // Funciones para obtener los datos
 const getPrograms = (): Program[] => {
   try {
@@ -751,11 +794,90 @@ const deleteTestimonial = (id: string): boolean => {
   }
 };
 
+// Función para obtener noticias
+const getNews = (): NewsItem[] => {
+  try {
+    const storedData = localStorage.getItem('teklatam_news');
+    if (storedData) {
+      return JSON.parse(storedData);
+    }
+    localStorage.setItem('teklatam_news', JSON.stringify(defaultNews));
+    return defaultNews;
+  } catch (error) {
+    console.error("Error loading news data:", error);
+    return defaultNews;
+  }
+};
+
+// Función para guardar noticias
+const saveNews = (news: NewsItem[]): void => {
+  try {
+    localStorage.setItem('teklatam_news', JSON.stringify(news));
+    window.dispatchEvent(new Event('storage'));
+  } catch (error) {
+    console.error("Error saving news:", error);
+  }
+};
+
+// CRUD para noticias
+const addNewsItem = (newsItem: Omit<NewsItem, "id">): NewsItem => {
+  try {
+    const news = getNews();
+    const newNewsItem = {
+      ...newsItem,
+      id: Date.now().toString()
+    };
+    news.push(newNewsItem);
+    saveNews(news);
+    console.log("News item added successfully:", newNewsItem);
+    return newNewsItem;
+  } catch (error) {
+    console.error("Error adding news item:", error);
+    throw new Error("Failed to add news item");
+  }
+};
+
+const updateNewsItem = (newsItem: NewsItem): NewsItem => {
+  try {
+    const news = getNews();
+    const index = news.findIndex(n => n.id === newsItem.id);
+    if (index !== -1) {
+      news[index] = newsItem;
+      saveNews(news);
+      console.log("News item updated successfully:", newsItem);
+    } else {
+      console.warn("News item not found:", newsItem.id);
+    }
+    return newsItem;
+  } catch (error) {
+    console.error("Error updating news item:", error);
+    throw new Error("Failed to update news item");
+  }
+};
+
+const deleteNewsItem = (id: string): boolean => {
+  try {
+    const news = getNews();
+    const filteredNews = news.filter(n => n.id !== id);
+    if (filteredNews.length < news.length) {
+      saveNews(filteredNews);
+      console.log("News item deleted successfully:", id);
+      return true;
+    }
+    console.warn("News item not found for deletion:", id);
+    return false;
+  } catch (error) {
+    console.error("Error deleting news item:", error);
+    return false;
+  }
+};
+
 // Estadísticas para el dashboard
 const getStats = () => {
   const programs = getPrograms();
   const instructors = getInstructors();
   const testimonials = getTestimonials();
+  const news = getNews();
   
   // Calcula el total de estudiantes sumando los estudiantes de todos los programas
   const totalStudents = programs.reduce((sum, program) => sum + program.students, 0);
@@ -764,6 +886,7 @@ const getStats = () => {
     totalPrograms: programs.length,
     totalInstructors: instructors.length,
     totalTestimonials: testimonials.length,
+    totalNews: news.length,
     totalStudents,
     recentActivity: generateRecentActivity() // Función auxiliar para generar actividad reciente
   };
@@ -849,6 +972,7 @@ export const dataService = {
   getInstructors,
   getTestimonials,
   getSiteContent,
+  getNews,
   getStats,
   
   // CRUD para programas
@@ -865,6 +989,11 @@ export const dataService = {
   addTestimonial,
   updateTestimonial,
   deleteTestimonial,
+  
+  // CRUD para noticias
+  addNewsItem,
+  updateNewsItem,
+  deleteNewsItem,
   
   // Actualizar contenido del sitio
   saveSiteContent,

@@ -97,6 +97,21 @@ export interface ContactMessage {
   status: 'new' | 'read' | 'replied' | 'archived'; // Added 'archived' status
 }
 
+// Nueva interfaz para noticias
+export interface NewsItem {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  image: string;
+  author: string;
+  publishedAt: string;
+  category: 'noticias' | 'eventos' | 'anuncios' | 'actualizaciones';
+  featured: boolean;
+  status: 'draft' | 'published';
+  tags: string[];
+}
+
 // Actualizamos SiteContent para incluir heroSlides
 export interface SiteContent {
   heroTitle: string;

@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, LayoutDashboard, Book, Users, MessageSquareQuote, FileText, MessageSquare } from 'lucide-react';
+import { LogOut, LayoutDashboard, Book, Users, MessageSquareQuote, FileText, MessageSquare, Newspaper } from 'lucide-react';
 import Dashboard from '@/components/admin/Dashboard';
 import ProgramsManager from '@/components/admin/ProgramsManager';
 import InstructorsManager from '@/components/admin/InstructorsManager';
 import TestimonialsManager from '@/components/admin/TestimonialsManager';
 import ContentManager from '@/components/admin/ContentManager';
 import ContactsManager from '@/components/admin/ContactsManager';
+import NewsManager from '@/components/admin/NewsManager';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -72,7 +73,7 @@ const Admin = () => {
           </div>
           
           <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid grid-cols-2 sm:grid-cols-6 gap-2 bg-gray-100 p-1 rounded-lg">
+            <TabsList className="grid grid-cols-2 sm:grid-cols-7 gap-2 bg-gray-100 p-1 rounded-lg">
               <TabsTrigger value="dashboard" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue data-[state=active]:shadow-sm flex gap-2 items-center">
                 <LayoutDashboard className="h-4 w-4" /> Dashboard
               </TabsTrigger>
@@ -84,6 +85,9 @@ const Admin = () => {
               </TabsTrigger>
               <TabsTrigger value="testimonios" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue data-[state=active]:shadow-sm flex gap-2 items-center">
                 <MessageSquareQuote className="h-4 w-4" /> Testimonios
+              </TabsTrigger>
+              <TabsTrigger value="noticias" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue data-[state=active]:shadow-sm flex gap-2 items-center">
+                <Newspaper className="h-4 w-4" /> Noticias
               </TabsTrigger>
               <TabsTrigger value="mensajes" className="data-[state=active]:bg-white data-[state=active]:text-teklatam-blue data-[state=active]:shadow-sm flex gap-2 items-center">
                 <MessageSquare className="h-4 w-4" /> Mensajes
@@ -108,6 +112,10 @@ const Admin = () => {
               
               <TabsContent value="testimonios" className="p-6">
                 <TestimonialsManager />
+              </TabsContent>
+              
+              <TabsContent value="noticias" className="p-6">
+                <NewsManager />
               </TabsContent>
               
               <TabsContent value="mensajes" className="p-6">
