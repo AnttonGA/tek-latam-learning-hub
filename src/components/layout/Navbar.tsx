@@ -80,6 +80,10 @@ const Navbar = () => {
                 Testimonios
               </button>
               
+              <Link to="/noticias" className="text-teklatam-gray-700 hover:text-teklatam-blue">
+                Noticias
+              </Link>
+              
               <Link to="/nosotros" className="text-teklatam-gray-700 hover:text-teklatam-blue">
                 Nosotros
               </Link>
@@ -129,7 +133,10 @@ const Navbar = () => {
             >
               Testimonios
             </button>
-            <Link to="/nosotros" className="block py-2 text-teklatam-gray-700">
+            <Link to="/noticias" className="block py-2 text-teklatam-gray-700" onClick={() => setIsOpen(false)}>
+              Noticias
+            </Link>
+            <Link to="/nosotros" className="block py-2 text-teklatam-gray-700" onClick={() => setIsOpen(false)}>
               Nosotros
             </Link>
             <div className="mt-4">

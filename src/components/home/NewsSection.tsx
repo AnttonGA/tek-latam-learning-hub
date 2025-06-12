@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -108,73 +109,77 @@ const NewsSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {news.map((item) => (
             <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
-              <div className="relative">
-                {item.image && (
-                  <div className="h-48 overflow-hidden">
-                    <img 
-                      src={item.image} 
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                )}
-                {item.featured && (
-                  <div className="absolute top-3 left-3">
-                    <Badge className="bg-teklatam-orange text-white">Destacada</Badge>
-                  </div>
-                )}
-                <div className="absolute top-3 right-3">
-                  <Badge className={getCategoryColor(item.category)}>
-                    {item.category}
-                  </Badge>
-                </div>
-              </div>
-              
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4 text-sm text-teklatam-gray-600 mb-3">
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    {formatDate(item.publishedAt)}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <User className="h-4 w-4" />
-                    {item.author}
+              <Link to={`/noticia/${item.id}`}>
+                <div className="relative">
+                  {item.image && (
+                    <div className="h-48 overflow-hidden">
+                      <img 
+                        src={item.image} 
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  {item.featured && (
+                    <div className="absolute top-3 left-3">
+                      <Badge className="bg-teklatam-orange text-white">Destacada</Badge>
+                    </div>
+                  )}
+                  <div className="absolute top-3 right-3">
+                    <Badge className={getCategoryColor(item.category)}>
+                      {item.category}
+                    </Badge>
                   </div>
                 </div>
                 
-                <h3 className="text-xl font-bold mb-3 group-hover:text-teklatam-orange transition-colors">
-                  {item.title}
-                </h3>
-                
-                <p className="text-teklatam-gray-600 mb-4 line-clamp-3">
-                  {item.excerpt}
-                </p>
-                
-                {item.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {item.tags.slice(0, 3).map((tag, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4 text-sm text-teklatam-gray-600 mb-3">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      {formatDate(item.publishedAt)}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <User className="h-4 w-4" />
+                      {item.author}
+                    </div>
                   </div>
-                )}
-                
-                <Button variant="ghost" className="w-full justify-between group-hover:text-teklatam-orange">
-                  Leer más
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </CardContent>
+                  
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-teklatam-orange transition-colors">
+                    {item.title}
+                  </h3>
+                  
+                  <p className="text-teklatam-gray-600 mb-4 line-clamp-3">
+                    {item.excerpt}
+                  </p>
+                  
+                  {item.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {item.tags.slice(0, 3).map((tag, index) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <Button variant="ghost" className="w-full justify-between group-hover:text-teklatam-orange">
+                    Leer más
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </CardContent>
+              </Link>
             </Card>
           ))}
         </div>
 
         {news.length >= 6 && (
           <div className="text-center mt-12">
-            <Button variant="outline" size="lg">
-              Ver todas las noticias
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
+            <Link to="/noticias">
+              <Button variant="outline" size="lg">
+                Ver todas las noticias
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
           </div>
         )}
       </div>

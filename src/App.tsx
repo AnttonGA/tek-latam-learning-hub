@@ -10,6 +10,8 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import Nosotros from "./pages/Nosotros";
+import News from "./pages/News";
+import NewsDetail from "./pages/NewsDetail";
 import ProgramDetail from "./pages/ProgramDetail";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -27,6 +29,8 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/nosotros" element={<Nosotros />} />
+              <Route path="/noticias" element={<News />} />
+              <Route path="/noticia/:id" element={<NewsDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/programa/:id" element={<ProgramDetail />} />
               <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
